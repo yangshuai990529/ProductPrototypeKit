@@ -6,8 +6,8 @@
 
 ## ⚡️ 2步使用指南（零配置）
 
-### 1. 用 IDE 打开项目
-克隆本项目，并使用集成 Workbuddy 的 IDE 直接打开项目根目录：
+### 1. 在 WorkBuddy 中打开项目
+克隆本项目，并使用 **WorkBuddy 客户端** 直接打开此项目目录：
 ```bash
 git clone https://github.com/yangshuai990529/ProductPrototypeKit.git
 ```
