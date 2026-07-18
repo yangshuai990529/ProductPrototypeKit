@@ -1,6 +1,6 @@
 ---
-name: requirement-intent-classifier
-description: 识别用户需求意图类型。判断需求属于新功能、修改功能、菜单新增、菜单调整、APK应用设计、UI优化、后台能力等，并输出控制下游处理的标志。
+name: ProductPrototypeKit
+description: 🤖 TCL OS 灵悉 UI 原型生成 Copilot 引导入口。支持指令 /ppk, /ProductPrototypeKit, ppk。用于识别电视大屏（设置、控制中心、桌面）的产品需求，进行意图分类并启动智能评审原型生成流程。
 ---
 
 ## 职责介绍
