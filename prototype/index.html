@@ -1,0 +1,1712 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>TCL TV OS 灵悉UI V5.2 还原原型</title>
+  <style>
+    /* Premium Theme CSS variables based on TCL screenshots */
+    :root {
+      --bg-dark: #07090d;
+      --bg-panel: #161821;
+      --bg-panel-light: #20242f;
+      --bg-item-focus: #e0e5ed;
+      --text-focus: #0f1115;
+      
+      --text-primary: #ffffff;
+      --text-secondary: #8e95a3;
+      --text-muted: #525866;
+      
+      /* Vibrant Cyan/Blue Accent color for TCL UI */
+      --accent-tcl: #3d7eff;
+      --accent-tcl-glow: rgba(61, 126, 255, 0.4);
+      --accent-cyan: #00e5ff;
+      
+      --color-success: #3dd875;
+      
+      /* Layout Config */
+      --sidebar-expanded-width: 250px;
+      --sidebar-collapsed-width: 90px;
+      --border-radius-lg: 16px;
+      --border-radius-md: 8px;
+      --transition-speed: 0.3s;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      outline: none;
+    }
+
+    body {
+      width: 1920px;
+      height: 1080px;
+      background-color: var(--bg-dark);
+      color: var(--text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, "Microsoft YaHei", sans-serif;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Screen Background Container (Launcher Desktop Grid) */
+    .launcher-desktop {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1920px;
+      height: 1080px;
+      padding: 50px 100px;
+      background: radial-gradient(circle at 80% 20%, #17283c 0%, #07090d 60%);
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      transition: filter var(--transition-speed);
+    }
+
+    /* Blur background when overlay panels are active */
+    .launcher-desktop.blurred {
+      filter: blur(8px) brightness(0.6);
+    }
+
+    /* Header elements in Launcher */
+    .launcher-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+
+    .launcher-tabs {
+      background-color: rgba(255, 255, 255, 0.08);
+      padding: 6px 12px;
+      border-radius: 40px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .launcher-tab {
+      padding: 8px 30px;
+      border-radius: 30px;
+      font-size: 22px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .launcher-tab.active {
+      background-color: var(--text-primary);
+      color: var(--text-focus);
+      font-weight: bold;
+    }
+
+    .launcher-status {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      font-size: 20px;
+      color: var(--text-secondary);
+    }
+
+    /* Launcher App Cards Grid layout */
+    .launcher-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: 240px 240px;
+      gap: 24px;
+      width: 100%;
+      height: 100%;
+    }
+
+    .launcher-card {
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: var(--border-radius-lg);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      gap: 8px;
+      position: relative;
+      overflow: hidden;
+      border: 2px solid transparent;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    .launcher-card.focused {
+      border-color: var(--text-primary);
+      transform: scale(1.03);
+      box-shadow: 0 8px 24px rgba(255,255,255,0.15);
+    }
+
+    /* Replicating Card visual contents */
+    .card-banner {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      opacity: 0.8;
+      z-index: 1;
+    }
+
+    .card-info {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-title {
+      font-size: 26px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .card-desc {
+      font-size: 18px;
+      color: var(--text-secondary);
+    }
+
+    .card-input-label {
+      font-size: 36px;
+      color: var(--text-secondary);
+      align-self: center;
+      margin-bottom: auto;
+      margin-top: 30px;
+    }
+
+    /* Small Trigger float button at bottom right */
+    .floating-trigger {
+      position: absolute;
+      bottom: 40px;
+      right: 40px;
+      background-color: var(--accent-tcl);
+      color: white;
+      padding: 16px 28px;
+      border-radius: 30px;
+      font-size: 20px;
+      font-weight: 600;
+      box-shadow: 0 8px 20px var(--accent-tcl-glow);
+      z-index: 99;
+      cursor: pointer;
+    }
+
+    /* OVERLAY 1: Left Control Center Panel (Image 1) */
+    .cc-overlay {
+      position: absolute;
+      top: 0;
+      left: -500px; /* Hidden default */
+      width: 420px;
+      height: 1080px;
+      background-color: rgba(22, 24, 33, 0.93);
+      backdrop-filter: blur(25px);
+      box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+      z-index: 10;
+      padding: 50px 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      transition: left var(--transition-speed) cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    .cc-overlay.active {
+      left: 0;
+    }
+
+    /* Weather & Time header */
+    .cc-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .cc-clock {
+      font-size: 72px;
+      font-weight: 300;
+      line-height: 1;
+    }
+
+    .cc-date-weather {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      text-align: right;
+      font-size: 18px;
+      color: var(--text-secondary);
+    }
+
+    .cc-bell {
+      font-size: 26px;
+      color: var(--text-secondary);
+      background-color: rgba(255,255,255,0.08);
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Tabs buttons standard settings / tools */
+    .cc-tabs-container {
+      display: flex;
+      gap: 16px;
+    }
+
+    .cc-tab-btn {
+      flex: 1;
+      padding: 16px;
+      border-radius: 12px;
+      background-color: rgba(255,255,255,0.05);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: flex-start;
+      border: 2px solid transparent;
+      font-size: 20px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .cc-tab-btn.focused {
+      border-color: var(--text-primary);
+      background-color: rgba(255,255,255,0.08);
+      color: var(--text-primary);
+    }
+
+    .cc-tab-btn.active {
+      background-color: rgba(255,255,255,0.08);
+      border-color: var(--text-primary);
+      color: var(--text-primary);
+    }
+
+    .cc-tab-icon {
+      font-size: 26px;
+    }
+
+    /* Controls items container */
+    .cc-controls-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow-y: auto;
+    }
+
+    .cc-controls-list::-webkit-scrollbar {
+      display: none;
+    }
+
+    .cc-item {
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 18px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 22px;
+      font-weight: 500;
+      color: var(--text-primary);
+      border: 2px solid transparent;
+      transition: background-color var(--transition-speed);
+    }
+
+    .cc-item.focused {
+      background-color: var(--bg-panel-light);
+      border-color: var(--accent-tcl);
+    }
+
+    .cc-item-status {
+      color: var(--text-secondary);
+      font-size: 20px;
+    }
+
+    /* Slider specific for CC */
+    .cc-slider-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .cc-slider-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+
+    .cc-slider-control {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      width: 180px;
+    }
+
+    /* Toggle switch for CC */
+    .toggle-switch {
+      width: 56px;
+      height: 28px;
+      border-radius: 14px;
+      background-color: rgba(255,255,255,0.15);
+      position: relative;
+      transition: background-color var(--transition-speed);
+    }
+
+    .toggle-switch.on {
+      background-color: var(--accent-tcl);
+    }
+
+    .toggle-knob {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background-color: white;
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      transition: left var(--transition-speed);
+    }
+
+    .toggle-switch.on .toggle-knob {
+      left: 32px;
+    }
+
+    /* OVERLAY 2: Main Settings Panel (Image 2-5) */
+    .settings-overlay {
+      position: absolute;
+      top: 0;
+      left: -1920px; /* Hidden default */
+      width: 1920px;
+      height: 1080px;
+      z-index: 20;
+      display: flex;
+      background-color: rgba(7, 9, 13, 0.4); /* Translucent shield */
+      transition: left var(--transition-speed) ease;
+    }
+
+    .settings-overlay.active {
+      left: 0;
+    }
+
+    /* Column 1: Left Categories Sidebar */
+    .sidebar {
+      width: var(--sidebar-expanded-width);
+      height: 1080px;
+      background-color: rgba(22, 24, 33, 0.98);
+      padding: 80px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      transition: width var(--transition-speed) cubic-bezier(0.25, 0.8, 0.25, 1);
+      overflow-x: hidden;
+      border-right: 1px solid rgba(255,255,255,0.05);
+      z-index: 22;
+    }
+
+    /* Collapsed state when focus moves right */
+    .sidebar.collapsed {
+      width: var(--sidebar-collapsed-width);
+    }
+
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      padding: 20px 30px;
+      gap: 20px;
+      font-size: 24px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      border-left: 4px solid transparent;
+      white-space: nowrap;
+      transition: all var(--transition-speed);
+    }
+
+    .sidebar-item.focused {
+      background-color: var(--bg-panel-light);
+      color: var(--text-primary);
+      border-left-color: var(--accent-tcl);
+    }
+
+    .sidebar-item.active {
+      background-color: var(--bg-panel-light);
+      color: var(--text-primary);
+    }
+
+    /* Icon resizing */
+    .sidebar-icon {
+      font-size: 30px;
+      min-width: 30px;
+      text-align: center;
+    }
+
+    /* Hide text during collapse */
+    .sidebar-label {
+      opacity: 1;
+      transition: opacity 0.2s ease;
+    }
+
+    .sidebar.collapsed .sidebar-label {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Column 2: Center Option Panel */
+    .center-panel {
+      width: 480px;
+      height: 1080px;
+      background-color: rgba(22, 24, 33, 0.95);
+      backdrop-filter: blur(20px);
+      padding: 80px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      border-right: 1px solid rgba(255,255,255,0.05);
+      z-index: 21;
+    }
+
+    .settings-header {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .settings-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .settings-title-text {
+      font-size: 36px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .settings-protocol-tag {
+      font-size: 20px;
+      color: var(--text-secondary);
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .settings-protocol-tag .dolby-logo {
+      color: var(--accent-tcl);
+    }
+
+    /* Setting lists standard layout */
+    .settings-list {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      overflow-y: auto;
+    }
+
+    .settings-list::-webkit-scrollbar {
+      display: none;
+    }
+
+    .subheading {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-top: 16px;
+      margin-bottom: 8px;
+      padding-left: 20px;
+    }
+
+    .opt-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 24px;
+      border-radius: var(--border-radius-md);
+      font-size: 24px;
+      font-weight: 500;
+      color: var(--text-primary);
+      transition: background-color var(--transition-speed);
+      border: 2px solid transparent;
+    }
+
+    .opt-item.focused {
+      background-color: var(--bg-item-focus);
+      color: var(--text-focus);
+      border-color: var(--text-primary);
+    }
+
+    .opt-item-val {
+      font-size: 20px;
+      color: var(--text-secondary);
+    }
+
+    .opt-item.focused .opt-item-val {
+      color: var(--text-focus);
+    }
+
+    /* Option Picker (Selector with Arrows) */
+    .option-picker {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .picker-arrow {
+      font-size: 18px;
+      color: var(--text-secondary);
+    }
+
+    .opt-item.focused .picker-arrow {
+      color: var(--text-focus);
+    }
+
+    /* Sliders styling */
+    .slider-track {
+      width: 140px;
+      height: 6px;
+      background-color: var(--text-muted);
+      border-radius: 3px;
+      position: relative;
+    }
+
+    .opt-item.focused .slider-track {
+      background-color: rgba(15, 17, 21, 0.3);
+    }
+
+    .slider-fill {
+      height: 100%;
+      background-color: var(--accent-tcl);
+      border-radius: 3px;
+    }
+
+    .opt-item.focused .slider-fill {
+      background-color: var(--accent-tcl);
+    }
+
+    .slider-val-box {
+      font-size: 22px;
+      min-width: 50px;
+      text-align: right;
+    }
+
+    /* Dialog styling */
+    .dialog-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 1920px;
+      height: 1080px;
+      background-color: rgba(0, 0, 0, 0.75);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 999;
+    }
+
+    .dialog-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .dialog-box {
+      width: 680px;
+      background-color: var(--bg-panel);
+      border-radius: var(--border-radius-lg);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      text-align: center;
+      transform: scale(0.9);
+      transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    .dialog-overlay.active .dialog-box {
+      transform: scale(1);
+    }
+
+    .dialog-title {
+      font-size: 32px;
+      font-weight: 600;
+    }
+
+    .dialog-message {
+      font-size: 22px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .dialog-actions {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .dialog-btn {
+      flex: 1;
+      padding: 16px;
+      border-radius: var(--border-radius-md);
+      font-size: 22px;
+      font-weight: bold;
+      text-align: center;
+      background-color: rgba(255,255,255,0.05);
+      border: 2px solid transparent;
+    }
+
+    .dialog-btn.focused {
+      background-color: var(--bg-item-focus);
+      color: var(--text-focus);
+      border-color: var(--text-primary);
+    }
+
+    /* Toast styling */
+    .toast-container {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background-color: var(--bg-panel-light);
+      color: white;
+      padding: 16px 40px;
+      border-radius: 40px;
+      font-size: 22px;
+      font-weight: 500;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      opacity: 0;
+      transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.3s ease;
+      z-index: 1000;
+      pointer-events: none;
+    }
+
+    .toast-container.active {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    .toast-container.error {
+      border-left: 4px solid var(--color-error);
+    }
+
+    /* Helper label display state for active selections */
+    .menu-item.disabled, .opt-item.disabled {
+      color: var(--text-muted) !important;
+      opacity: 0.5;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LAYER 0: TV Desktop Launcher Background -->
+  <div class="launcher-desktop" id="launcher-view">
+    
+    <!-- Top Tabs & Status Bar -->
+    <div class="launcher-header">
+      <div class="launcher-tabs">
+        <div class="launcher-tab">观影</div>
+        <div class="launcher-tab">长辈</div>
+        <div class="launcher-tab">少儿</div>
+        <div class="launcher-tab">应用</div>
+        <div class="launcher-tab active">自定义</div>
+      </div>
+      <div class="launcher-status">
+        <span>📶 WiFi-Connected</span>
+        <span>20:28</span>
+      </div>
+    </div>
+
+    <!-- Cards Grid -->
+    <div class="launcher-grid">
+      <!-- Input Card -->
+      <div class="launcher-card" style="background: linear-gradient(135deg, #2d3748, #1a202c);">
+        <span class="card-input-label">🔌 未接入</span>
+        <div class="card-info">
+          <span class="card-title">信号源选择</span>
+          <span class="card-desc">外部 HDMI 连接端口</span>
+        </div>
+      </div>
+
+      <!-- App Card -->
+      <div class="launcher-card" style="background: linear-gradient(135deg, #b83280, #702459);">
+        <div class="card-info">
+          <span class="card-title">应用中心</span>
+          <span class="card-desc">热门推荐与下载专区</span>
+        </div>
+      </div>
+
+      <!-- Edu Card -->
+      <div class="launcher-card" style="background: linear-gradient(135deg, #dd6b20, #9c4221);">
+        <div style="font-size: 60px; margin-bottom: auto; align-self: center;">🐼</div>
+        <div class="card-info">
+          <span class="card-title">教育中心</span>
+          <span class="card-desc">学前启蒙第一课</span>
+        </div>
+      </div>
+
+      <!-- Tencent Card -->
+      <div class="launcher-card" style="background: linear-gradient(135deg, #319795, #234e52);">
+        <div class="card-info">
+          <span class="card-title">云视听极光</span>
+          <span class="card-desc">腾讯独家影视库</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLOATING SHORTCUT TRIGGER (For Mouse Users) -->
+  <div class="floating-trigger" id="float-trigger-btn">💡 呼出控制中心 (按 C 键)</div>
+
+  <!-- LAYER 1: Left Control Center Drawer (Image 1) -->
+  <div class="cc-overlay" id="cc-view">
+    
+    <!-- Weather & Time header -->
+    <div class="cc-header">
+      <div class="cc-clock" id="cc-time">16:53</div>
+      <div class="cc-date-weather">
+        <span>03月18日 周三</span>
+        <span>南山 25℃ ☀</span>
+      </div>
+      <div class="cc-bell">🔔</div>
+    </div>
+
+    <!-- Dual Tabs Settings vs Tools -->
+    <div class="cc-tabs-container">
+      <div class="cc-tab-btn focusable active" id="cc-tab-settings">
+        <span class="cc-tab-icon">⚙</span>
+        <span>全部设置</span>
+      </div>
+      <div class="cc-tab-btn focusable" id="cc-tab-tools">
+        <span class="cc-tab-icon">🛠</span>
+        <span>快捷工具 &gt;</span>
+      </div>
+    </div>
+
+    <!-- Items list -->
+    <div class="cc-controls-list">
+      
+      <!-- Brightness Slider inside CC -->
+      <div class="cc-item focusable" id="cc-item-brightness" data-type="slider" data-val="30">
+        <div class="cc-slider-wrap">
+          <div class="cc-slider-row">
+            <span>🔆 亮度</span>
+            <span class="slider-val-box" id="cc-brightness-txt">30</span>
+          </div>
+          <div class="slider-track" style="width: 100%;">
+            <div class="slider-fill" id="cc-brightness-fill" style="width: 30%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Network -->
+      <div class="cc-item focusable" id="cc-item-wifi">
+        <span>📶 网络</span>
+        <span class="cc-item-status">000TP-LINK &gt;</span>
+      </div>
+
+      <!-- Audio Output -->
+      <div class="cc-item focusable" id="cc-item-audio">
+        <span>🔊 音频输出</span>
+        <span class="cc-item-status">自动 (扬声器) &gt;</span>
+      </div>
+
+      <!-- Source -->
+      <div class="cc-item focusable" id="cc-item-source">
+        <span>🔌 信号源</span>
+        <span class="cc-item-status">未接入 &gt;</span>
+      </div>
+
+      <!-- Bluetooth -->
+      <div class="cc-item focusable" id="cc-item-bt">
+        <span>🎧 蓝牙</span>
+        <span class="cc-item-status">蓝牙遥控器 &gt;</span>
+      </div>
+
+      <!-- Ambient Light sensing Toggle -->
+      <div class="cc-item focusable" id="cc-item-ambient" data-type="toggle">
+        <span>🏠 环境亮度感应</span>
+        <div class="toggle-switch" id="cc-ambient-toggle">
+          <div class="toggle-knob"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- LAYER 2: Main Settings Overlay Panel (Image 2-5) -->
+  <div class="settings-overlay" id="settings-view">
+    
+    <!-- Column 1: Categories Sidebar -->
+    <div class="sidebar" id="sidebar-col">
+      <div class="sidebar-item focusable active" id="sidebar-pq">
+        <span class="sidebar-icon">🖼</span>
+        <span class="sidebar-label">图像</span>
+      </div>
+      <div class="sidebar-item focusable" id="sidebar-sound">
+        <span class="sidebar-icon">🔊</span>
+        <span class="sidebar-label">声音</span>
+      </div>
+      <div class="sidebar-item focusable" id="sidebar-network">
+        <span class="sidebar-icon">📶</span>
+        <span class="sidebar-label">网络</span>
+      </div>
+      <div class="sidebar-item focusable" id="sidebar-bt">
+        <span class="sidebar-icon">🎧</span>
+        <span class="sidebar-label">蓝牙</span>
+      </div>
+      <div class="sidebar-item focusable" id="sidebar-source">
+        <span class="sidebar-icon">🔌</span>
+        <span class="sidebar-label">信号源</span>
+      </div>
+      <div class="sidebar-item focusable" id="sidebar-ai">
+        <span class="sidebar-icon">🧠</span>
+        <span class="sidebar-label">AI智能</span>
+      </div>
+      <div class="sidebar-item focusable" id="sidebar-general">
+        <span class="sidebar-icon">🛠</span>
+        <span class="sidebar-label">通用</span>
+      </div>
+      <div class="sidebar-item focusable" id="sidebar-theme">
+        <span class="sidebar-icon">🎨</span>
+        <span class="sidebar-label">个性化</span>
+      </div>
+      <div class="sidebar-item focusable" id="sidebar-about">
+        <span class="sidebar-icon">ℹ</span>
+        <span class="sidebar-label">关于</span>
+      </div>
+    </div>
+
+    <!-- Column 2: Center Settings Panel -->
+    <div class="center-panel" id="center-panel-col">
+      
+      <!-- Panel Header (Dynamic Dolby/SDR tags) -->
+      <div class="settings-header">
+        <div class="settings-title-row">
+          <span class="settings-title-text" id="panel-title-txt">图像</span>
+          <div class="settings-protocol-tag" id="panel-protocol-tag">
+            <span id="protocol-logo-type">SDR</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings Items Area (Dynamic content based on selection) -->
+      <div class="settings-list" id="settings-items-container">
+        <!-- Root Picture setting items list (Image 2) -->
+        <div id="pq-main-list" style="display: flex; flex-direction: column; gap: 4px; width: 100%;">
+          
+          <div class="opt-item focusable" id="opt-pq-mode" data-type="picker" data-val="0">
+            <span>图效模式</span>
+            <div class="option-picker">
+              <span class="picker-arrow">&lt;</span>
+              <span id="pq-mode-text">FILMMAKER</span>
+              <span class="picker-arrow">&gt;</span>
+            </div>
+          </div>
+
+          <div class="subheading">高级设置</div>
+
+          <div class="opt-item focusable" id="opt-sub-brightness">
+            <span>亮度</span>
+            <span class="opt-item-val">&gt;</span>
+          </div>
+          
+          <div class="opt-item focusable" id="opt-sub-color">
+            <span>色彩</span>
+            <span class="opt-item-val">&gt;</span>
+          </div>
+
+          <div class="opt-item focusable" id="opt-sub-motion">
+            <span>运动</span>
+            <span class="opt-item-val">&gt;</span>
+          </div>
+
+          <div class="opt-item focusable" id="opt-sub-clarity">
+            <span>清晰度</span>
+            <span class="opt-item-val">&gt;</span>
+          </div>
+
+          <div class="opt-item focusable" id="opt-sub-range">
+            <span>信号范围</span>
+            <span class="opt-item-val">自动 &gt;</span>
+          </div>
+
+          <div class="opt-item focusable" id="opt-sub-standard">
+            <span>显示标准</span>
+            <span class="opt-item-val">自动 &gt;</span>
+          </div>
+
+        </div>
+
+        <!-- Sub-panel Brightness items list (Image 4) -->
+        <div id="pq-brightness-list" style="display: none; flex-direction: column; gap: 4px; width: 100%;">
+          
+          <div class="opt-item focusable" id="opt-val-brightness" data-type="slider" data-val="100">
+            <span>亮度</span>
+            <div class="cc-slider-control">
+              <div class="slider-track">
+                <div class="slider-fill" id="val-brightness-fill" style="width: 100%;"></div>
+              </div>
+              <span class="slider-val-box" id="val-brightness-txt">100</span>
+            </div>
+          </div>
+
+          <div class="opt-item focusable" id="opt-val-contrast" data-type="slider" data-val="50">
+            <span>对比度</span>
+            <div class="cc-slider-control">
+              <div class="slider-track">
+                <div class="slider-fill" id="val-contrast-fill" style="width: 50%;"></div>
+              </div>
+              <span class="slider-val-box" id="val-contrast-txt">50</span>
+            </div>
+          </div>
+
+          <div class="opt-item focusable" id="opt-val-gamma" data-type="picker" data-val="1">
+            <span>伽马</span>
+            <div class="option-picker">
+              <span class="picker-arrow">&lt;</span>
+              <span id="val-gamma-txt">2.2</span>
+              <span class="picker-arrow">&gt;</span>
+            </div>
+          </div>
+
+          <!-- Added Feature from previous phase -->
+          <div class="opt-item focusable" id="opt-val-eyecare" data-type="toggle">
+            <span>智能低蓝光护眼模式</span>
+            <div class="toggle-switch" id="val-eyecare-toggle">
+              <div class="toggle-knob"></div>
+            </div>
+          </div>
+
+          <!-- Cascade unlocked Slider -->
+          <div class="opt-item focusable disabled" id="opt-val-eyecare-intensity" data-type="slider" data-val="0">
+            <span>防蓝光强度</span>
+            <div class="cc-slider-control">
+              <div class="slider-track">
+                <div class="slider-fill" id="val-intensity-fill" style="width: 0%;"></div>
+              </div>
+              <span class="slider-val-box" id="val-intensity-txt">0%</span>
+            </div>
+          </div>
+
+          <div class="opt-item focusable" id="opt-val-autohdr" data-type="toggle">
+            <span>自动HDR转换</span>
+            <div class="toggle-switch" id="val-autohdr-toggle">
+              <div class="toggle-knob"></div>
+            </div>
+          </div>
+
+          <div class="opt-item focusable" id="opt-val-tonemapping" data-type="picker" data-val="0">
+            <span>HDR动态色调映射</span>
+            <div class="option-picker">
+              <span class="picker-arrow">&lt;</span>
+              <span id="val-tonemapping-txt">关闭</span>
+              <span class="picker-arrow">&gt;</span>
+            </div>
+          </div>
+
+          <div class="opt-item focusable" id="opt-val-blacklevel" data-type="slider" data-val="50">
+            <span>黑电平</span>
+            <div class="cc-slider-control">
+              <div class="slider-track">
+                <div class="slider-fill" id="val-blacklevel-fill" style="width: 50%;"></div>
+              </div>
+              <span class="slider-val-box" id="val-blacklevel-txt">50</span>
+            </div>
+          </div>
+
+          <div class="opt-item focusable" id="opt-val-blacklevel-ext" data-type="toggle">
+            <span>黑电平延伸</span>
+            <span class="opt-item-val" id="val-blacklevel-ext-txt">关</span>
+          </div>
+
+          <div class="opt-item focusable" id="opt-val-dynamic-contrast" data-type="toggle">
+            <span>动态对比度</span>
+            <span class="opt-item-val" id="val-dynamic-contrast-txt">关</span>
+          </div>
+
+        </div>
+
+        <!-- Sub-panel Color items list (Image 5) -->
+        <div id="pq-color-list" style="display: none; flex-direction: column; gap: 4px; width: 100%;">
+          
+          <div class="opt-item focusable" id="opt-val-saturation" data-type="slider" data-val="50">
+            <span>饱和度</span>
+            <div class="cc-slider-control">
+              <div class="slider-track">
+                <div class="slider-fill" id="val-saturation-fill" style="width: 50%;"></div>
+              </div>
+              <span class="slider-val-box" id="val-saturation-txt">50</span>
+            </div>
+          </div>
+
+          <div class="opt-item focusable" id="opt-val-hue" data-type="slider" data-val="50">
+            <span>色调</span>
+            <div class="cc-slider-control">
+              <div class="slider-track">
+                <div class="slider-fill" id="val-hue-fill" style="width: 50%;"></div>
+              </div>
+              <span class="slider-val-box" id="val-hue-txt">50</span>
+            </div>
+          </div>
+
+          <div class="opt-item focusable" id="opt-val-temp" data-type="slider" data-val="3">
+            <span>色温</span>
+            <div class="cc-slider-control">
+              <div class="slider-track">
+                <div class="slider-fill" id="val-temp-fill" style="width: 75%;"></div>
+              </div>
+              <span class="slider-val-box" id="val-temp-txt">暖</span>
+            </div>
+          </div>
+
+          <div class="opt-item focusable" id="opt-val-colorenhance" data-type="toggle">
+            <span>色彩增强</span>
+            <span class="opt-item-val" id="val-colorenhance-txt">关</span>
+          </div>
+
+          <div class="opt-item focusable" id="opt-sub-whitebalance">
+            <span>白平衡</span>
+            <span class="opt-item-val">&gt;</span>
+          </div>
+
+          <div class="opt-item focusable" id="opt-val-colorspace" data-type="picker" data-val="0">
+            <span>色彩空间</span>
+            <div class="option-picker">
+              <span class="picker-arrow">&lt;</span>
+              <span id="val-colorspace-txt">原始</span>
+              <span class="picker-arrow">&gt;</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Column 3: Transparent active signal feedback display (Simulation on right side) -->
+    <div style="flex: 1; height: 1080px; position: relative;">
+      <div style="position: absolute; bottom: 80px; left: 80px; background-color: rgba(0,0,0,0.6); padding: 16px 32px; border-radius: 30px; font-size: 20px;">
+        💡 按 <b>Esc</b> 键可逐级退回。当前焦点列离开最左侧时，类别栏会自动收缩。
+      </div>
+    </div>
+  </div>
+
+  <!-- Disclaimer Dialog Modal Overlay -->
+  <div class="dialog-overlay" id="disclaimer-dialog">
+    <div class="dialog-box">
+      <div class="dialog-title">开启防蓝光护眼提示</div>
+      <div class="dialog-message">开启智能低蓝光护眼模式后，系统将自动降低屏幕蓝光辐射，这可能会导致画面整体色调偏黄偏暖，属于正常现象。您是否确认开启？</div>
+      <div class="dialog-actions">
+        <div class="dialog-btn focusable" id="btn-dialog-cancel">取消</div>
+        <div class="dialog-btn focusable" id="btn-dialog-confirm" data-default-focus="true" style="background-color: var(--accent-tcl); color: white;">确认开启</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Standard Toast Container -->
+  <div class="toast-container" id="toast-notify">
+    <span id="toast-text">设置已生效</span>
+  </div>
+
+  <!-- Pure-JS Spatial Focus Engine Customization -->
+  <script>
+    class TVFocusEngine {
+      constructor() {
+        this.currentFocused = null;
+        this.previousFocusedStack = [];
+        this.initListeners();
+      }
+
+      getFocusableElements() {
+        // Overlay constraints
+        const activeOverlay = document.querySelector('.dialog-overlay.active');
+        if (activeOverlay) {
+          return Array.from(activeOverlay.querySelectorAll('.focusable'));
+        }
+
+        // Check if Settings is active
+        const settingsOverlay = document.getElementById('settings-view');
+        if (settingsOverlay.classList.contains('active')) {
+          // All focusable elements inside settings panel
+          const sidebarElements = Array.from(document.getElementById('sidebar-col').querySelectorAll('.focusable'));
+          const centerElements = Array.from(document.getElementById('center-panel-col').querySelectorAll('.focusable'));
+          return [...sidebarElements, ...centerElements].filter(el => {
+            const style = window.getComputedStyle(el);
+            return style.display !== 'none' && style.visibility !== 'hidden';
+          });
+        }
+
+        // Check if CC is active
+        const ccOverlay = document.getElementById('cc-view');
+        if (ccOverlay.classList.contains('active')) {
+          return Array.from(ccOverlay.querySelectorAll('.focusable'));
+        }
+
+        // Else only launcher cards (if we made them focusable)
+        return Array.from(document.querySelectorAll('.launcher-card.focusable'));
+      }
+
+      setFocus(element) {
+        if (this.currentFocused) {
+          this.currentFocused.classList.remove('focused');
+          this.currentFocused.blur();
+        }
+
+        if (element) {
+          this.currentFocused = element;
+          this.currentFocused.classList.add('focused');
+          this.currentFocused.focus();
+
+          // Auto-trigger sidebar collapse/expand check
+          this.checkSidebarState(element);
+
+          // Scroll list items
+          this.currentFocused.scrollIntoView({
+            behavior: 'smooth',
+            block: 'nearest',
+            inline: 'nearest'
+          });
+        }
+      }
+
+      /**
+       * Image 2 vs Image 3 rule: Collapse Category column to 90px if focus is in Center Panel (Column 2)
+       */
+      checkSidebarState(focusedEl) {
+        const sidebar = document.getElementById('sidebar-col');
+        // Check if the focused element is a child of the sidebar
+        const isInsideSidebar = sidebar.contains(focusedEl);
+        
+        // Also check if settings page is active
+        const settingsActive = document.getElementById('settings-view').classList.contains('active');
+        if (settingsActive) {
+          if (isInsideSidebar) {
+            sidebar.classList.remove('collapsed');
+          } else {
+            sidebar.classList.add('collapsed');
+          }
+        }
+      }
+
+      focusDefault() {
+        const elements = this.getFocusableElements();
+        if (elements.length > 0) {
+          const defaultEl = elements.find(el => el.getAttribute('data-default-focus') === 'true') || elements[0];
+          this.setFocus(defaultEl);
+        }
+      }
+
+      navigate(direction) {
+        if (!this.currentFocused) {
+          this.focusDefault();
+          return;
+        }
+
+        // Check if focused item is slider or picker. Arrows left/right are captured by business logic instead
+        const type = this.currentFocused.getAttribute('data-type');
+        const isSliderOrPicker = type === 'slider' || type === 'picker';
+        if (isSliderOrPicker && (direction === 'ArrowLeft' || direction === 'ArrowRight')) {
+          // If disabled, allow warning to display
+          if (this.currentFocused.classList.contains('disabled')) {
+            // bubble to key listener
+            return;
+          }
+          return; // Let slider/picker capture ArrowLeft/Right keys
+        }
+
+        const currentRect = this.currentFocused.getBoundingClientRect();
+        const currentCenter = {
+          x: currentRect.left + currentRect.width / 2,
+          y: currentRect.top + currentRect.height / 2
+        };
+
+        const candidates = this.getFocusableElements().filter(el => el !== this.currentFocused);
+        let bestCandidate = null;
+        let minScore = Infinity;
+
+        candidates.forEach(cand => {
+          const candRect = cand.getBoundingClientRect();
+          const candCenter = {
+            x: candRect.left + candRect.width / 2,
+            y: candRect.top + candRect.height / 2
+          };
+
+          let isAligned = false;
+          let primaryDiff = 0;
+          let secondaryDiff = 0;
+
+          switch (direction) {
+            case 'ArrowUp':
+              isAligned = candCenter.y < currentCenter.y;
+              primaryDiff = currentCenter.y - candCenter.y;
+              secondaryDiff = Math.abs(candCenter.x - currentCenter.x);
+              break;
+            case 'ArrowDown':
+              isAligned = candCenter.y > currentCenter.y;
+              primaryDiff = candCenter.y - currentCenter.y;
+              secondaryDiff = Math.abs(candCenter.x - currentCenter.x);
+              break;
+            case 'ArrowLeft':
+              isAligned = candCenter.x < currentCenter.x;
+              primaryDiff = currentCenter.x - candCenter.x;
+              secondaryDiff = Math.abs(candCenter.y - currentCenter.y);
+              break;
+            case 'ArrowRight':
+              isAligned = candCenter.x > currentCenter.x;
+              primaryDiff = candCenter.x - currentCenter.x;
+              secondaryDiff = Math.abs(candCenter.y - currentCenter.y);
+              break;
+          }
+
+          if (isAligned) {
+            // Prioritize vertical/horizontal alignment, penalize diagonal
+            const score = primaryDiff + (secondaryDiff * 3.5);
+            if (score < minScore) {
+              minScore = score;
+              bestCandidate = cand;
+            }
+          }
+        });
+
+        if (bestCandidate) {
+          this.setFocus(bestCandidate);
+        }
+      }
+
+      openDialog(overlaySelector) {
+        const overlay = document.querySelector(overlaySelector);
+        if (!overlay) return;
+
+        if (this.currentFocused) {
+          this.previousFocusedStack.push(this.currentFocused);
+        }
+
+        overlay.classList.add('active');
+        setTimeout(() => {
+          this.focusDefault();
+        }, 50);
+      }
+
+      closeDialog(overlaySelector) {
+        const overlay = document.querySelector(overlaySelector);
+        if (!overlay) return;
+
+        overlay.classList.remove('active');
+        const prev = this.previousFocusedStack.pop();
+        if (prev) {
+          this.setFocus(prev);
+        } else {
+          this.focusDefault();
+        }
+      }
+
+      initListeners() {
+        window.addEventListener('keydown', (e) => {
+          const keys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter', 'Escape'];
+          if (!keys.includes(e.key)) return;
+
+          e.preventDefault();
+
+          if (e.key === 'Enter') {
+            if (this.currentFocused) {
+              this.currentFocused.click();
+            }
+          } else {
+            this.navigate(e.key);
+          }
+        });
+      }
+    }
+
+    window.tvFocusEngine = new TVFocusEngine();
+  </script>
+
+  <!-- Business Interaction Logic Restoring Screenshots -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      
+      const launcher = document.getElementById('launcher-view');
+      const cc = document.getElementById('cc-view');
+      const settings = document.getElementById('settings-view');
+      const toast = document.getElementById('toast-notify');
+      const toastText = document.getElementById('toast-text');
+
+      // State controllers
+      let activeOverlay = null; // 'cc' or 'settings' or null
+      let currentSettingsPanel = 'main'; // 'main', 'brightness', 'color'
+      let isEyecareOn = false;
+      let pictureModeIdx = 0; // 0: FILMMAKER, 1: 杜比视界IQ, 2: 电影, 3: 标准
+      const pictureModes = ['FILMMAKER', '杜比视界IQ', '电影', '标准'];
+
+      function showToast(msg, isError = false) {
+        toastText.textContent = msg;
+        if (isError) {
+          toast.classList.add('error');
+        } else {
+          toast.classList.remove('error');
+        }
+        toast.classList.add('active');
+        setTimeout(() => {
+          toast.classList.remove('active');
+        }, 2200);
+      }
+
+      // 1. Toggle Control Center
+      function openControlCenter() {
+        activeOverlay = 'cc';
+        launcher.classList.add('blurred');
+        cc.classList.add('active');
+        settings.classList.remove('active');
+        
+        // Reset active tab highlight in CC
+        document.getElementById('cc-tab-settings').classList.add('active');
+        document.getElementById('cc-tab-tools').classList.remove('active');
+
+        setTimeout(() => {
+          tvFocusEngine.focusDefault();
+        }, 50);
+      }
+
+      function closeControlCenter() {
+        activeOverlay = null;
+        cc.classList.remove('active');
+        launcher.classList.remove('blurred');
+        tvFocusEngine.currentFocused = null;
+      }
+
+      // Keyboard 'C' triggers Control Center
+      window.addEventListener('keydown', (e) => {
+        if (e.code === 'KeyC') {
+          if (!activeOverlay) {
+            openControlCenter();
+          } else if (activeOverlay === 'cc') {
+            closeControlCenter();
+          }
+        }
+      });
+
+      document.getElementById('float-trigger-btn').addEventListener('click', () => {
+        if (!activeOverlay) {
+          openControlCenter();
+        } else {
+          closeControlCenter();
+        }
+      });
+
+      // 2. Tab switching logic inside CC
+      document.getElementById('cc-tab-settings').addEventListener('click', () => {
+        openSettings();
+      });
+
+      // Ambient toggle switch inside CC
+      const ccAmbient = document.getElementById('cc-item-ambient');
+      ccAmbient.addEventListener('click', () => {
+        const toggle = document.getElementById('cc-ambient-toggle');
+        const isActive = toggle.classList.toggle('on');
+        showToast(isActive ? '环境亮度感应已开启' : '环境亮度感应已关闭');
+      });
+
+      // 3. Open Settings Panel
+      function openSettings() {
+        activeOverlay = 'settings';
+        cc.classList.remove('active');
+        settings.classList.add('active');
+        
+        // Default to main setting column
+        showSettingsPanel('main');
+        
+        setTimeout(() => {
+          // Focus first category
+          const firstCat = document.getElementById('sidebar-pq');
+          tvFocusEngine.setFocus(firstCat);
+        }, 50);
+      }
+
+      function closeSettings() {
+        openControlCenter(); // returns back to CC
+      }
+
+      // Escape keys / Back routing
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          if (activeOverlay === 'settings') {
+            e.preventDefault();
+            if (currentSettingsPanel === 'brightness' || currentSettingsPanel === 'color') {
+              showSettingsPanel('main');
+            } else {
+              closeSettings();
+            }
+          } else if (activeOverlay === 'cc') {
+            e.preventDefault();
+            closeControlCenter();
+          }
+        }
+      });
+
+      // Navigation clicks for advanced settings categories
+      document.getElementById('opt-sub-brightness').addEventListener('click', () => {
+        showSettingsPanel('brightness');
+      });
+
+      document.getElementById('opt-sub-color').addEventListener('click', () => {
+        showSettingsPanel('color');
+      });
+
+      function showSettingsPanel(panelType) {
+        currentSettingsPanel = panelType;
+        const mainList = document.getElementById('pq-main-list');
+        const brightnessList = document.getElementById('pq-brightness-list');
+        const colorList = document.getElementById('pq-color-list');
+        const titleTxt = document.getElementById('panel-title-txt');
+
+        mainList.style.display = 'none';
+        brightnessList.style.display = 'none';
+        colorList.style.display = 'none';
+
+        if (panelType === 'main') {
+          mainList.style.display = 'flex';
+          titleTxt.textContent = '图像';
+          setTimeout(() => {
+            tvFocusEngine.setFocus(document.getElementById('opt-pq-mode'));
+          }, 20);
+        } else if (panelType === 'brightness') {
+          brightnessList.style.display = 'flex';
+          titleTxt.textContent = '亮度';
+          setTimeout(() => {
+            tvFocusEngine.setFocus(document.getElementById('opt-val-brightness'));
+          }, 20);
+        } else if (panelType === 'color') {
+          colorList.style.display = 'flex';
+          titleTxt.textContent = '色彩';
+          setTimeout(() => {
+            tvFocusEngine.setFocus(document.getElementById('opt-val-saturation'));
+          }, 20);
+        }
+      }
+
+      // 4. Picture Mode Arrow selection and SDR/Dolby Vision protocol tag toggling
+      function updatePictureMode(dir) {
+        if (dir === 'left') {
+          pictureModeIdx = (pictureModeIdx - 1 + pictureModes.length) % pictureModes.length;
+        } else {
+          pictureModeIdx = (pictureModeIdx + 1) % pictureModes.length;
+        }
+        
+        const mode = pictureModes[pictureModeIdx];
+        document.getElementById('pq-mode-text').textContent = mode;
+        
+        // Protocol sync (Dolby Vision vs SDR)
+        const tag = document.getElementById('panel-protocol-tag');
+        if (mode === '杜比视界IQ') {
+          tag.innerHTML = '<span class="dolby-logo"> Dolby Vision IQ</span>';
+          showToast('已切换至杜比视界IQ模式');
+        } else {
+          tag.innerHTML = '<span>SDR</span>';
+          showToast(`已切换至图效模式 ${mode}`);
+        }
+      }
+
+      // Slider adjusting for settings sliders
+      window.addEventListener('keydown', (e) => {
+        const focused = tvFocusEngine.currentFocused;
+        if (!focused) return;
+
+        // Custom Pickers and Toggles Left/Right overrides
+        const type = focused.getAttribute('data-type');
+        if (type === 'picker') {
+          if (e.key === 'ArrowLeft') {
+            handlePickerChange(focused.id, 'left');
+          } else if (e.key === 'ArrowRight') {
+            handlePickerChange(focused.id, 'right');
+          }
+          return;
+        }
+
+        if (type === 'slider') {
+          // If intensity slider is disabled, block keys
+          if (focused.id === 'opt-val-eyecare-intensity' && !isEyecareOn) {
+            if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+              showToast('请先开启智能低蓝光护眼模式', true);
+            }
+            return;
+          }
+
+          let val = parseInt(focused.getAttribute('data-val'));
+          let min = 0, max = 100, step = 5;
+
+          if (focused.id === 'opt-val-temp') {
+            max = 5;
+            step = 1;
+          }
+
+          if (e.key === 'ArrowLeft' && val > min) {
+            val -= step;
+            applySliderVal(focused.id, val);
+          } else if (e.key === 'ArrowRight' && val < max) {
+            val += step;
+            applySliderVal(focused.id, val);
+          }
+        }
+      });
+
+      function handlePickerChange(id, direction) {
+        if (id === 'opt-pq-mode') {
+          updatePictureMode(direction);
+        } else if (id === 'opt-val-gamma') {
+          const gammaEl = document.getElementById('val-gamma-txt');
+          gammaEl.textContent = direction === 'left' ? '1.8' : '2.2';
+        } else if (id === 'opt-val-tonemapping') {
+          const tmEl = document.getElementById('val-tonemapping-txt');
+          tmEl.textContent = direction === 'left' ? '开启' : '关闭';
+        } else if (id === 'opt-val-colorspace') {
+          const csEl = document.getElementById('val-colorspace-txt');
+          csEl.textContent = direction === 'left' ? '自动' : '原始';
+        }
+      }
+
+      function applySliderVal(id, val) {
+        const item = document.getElementById(id);
+        item.setAttribute('data-val', val);
+
+        if (id === 'cc-item-brightness') {
+          document.getElementById('cc-brightness-fill').style.width = val + '%';
+          document.getElementById('cc-brightness-txt').textContent = val;
+        } else if (id === 'opt-val-brightness') {
+          document.getElementById('val-brightness-fill').style.width = val + '%';
+          document.getElementById('val-brightness-txt').textContent = val;
+        } else if (id === 'opt-val-contrast') {
+          document.getElementById('val-contrast-fill').style.width = val + '%';
+          document.getElementById('val-contrast-txt').textContent = val;
+        } else if (id === 'opt-val-blacklevel') {
+          document.getElementById('val-blacklevel-fill').style.width = val + '%';
+          document.getElementById('val-blacklevel-txt').textContent = val;
+        } else if (id === 'opt-val-saturation') {
+          document.getElementById('val-saturation-fill').style.width = val + '%';
+          document.getElementById('val-saturation-txt').textContent = val;
+        } else if (id === 'opt-val-hue') {
+          document.getElementById('val-hue-fill').style.width = val + '%';
+          document.getElementById('val-hue-txt').textContent = val;
+        } else if (id === 'opt-val-eyecare-intensity') {
+          document.getElementById('val-intensity-fill').style.width = val + '%';
+          document.getElementById('val-intensity-txt').textContent = val + '%';
+        } else if (id === 'opt-val-temp') {
+          const labels = ['超冷', '冷', '标准', '暖', '超暖'];
+          document.getElementById('val-temp-fill').style.width = (val * 25) + '%';
+          document.getElementById('val-temp-txt').textContent = labels[val] || '标准';
+        }
+      }
+
+      // 5. Eyecare activation gating logic (Dialog Modal)
+      const eyecareToggle = document.getElementById('opt-val-eyecare');
+      eyecareToggle.addEventListener('click', () => {
+        if (!isEyecareOn) {
+          tvFocusEngine.openDialog('#disclaimer-dialog');
+        } else {
+          turnOffEyecare();
+        }
+      });
+
+      function turnOnEyecare() {
+        isEyecareOn = true;
+        document.getElementById('val-eyecare-toggle').classList.add('on');
+        
+        // Unlock intensity slider
+        const intensity = document.getElementById('opt-val-eyecare-intensity');
+        intensity.classList.remove('disabled');
+        intensity.setAttribute('data-val', '50');
+        document.getElementById('val-intensity-fill').style.width = '50%';
+        document.getElementById('val-intensity-txt').textContent = '50%';
+
+        showToast('防蓝光护眼模式已开启');
+      }
+
+      function turnOffEyecare() {
+        isEyecareOn = false;
+        document.getElementById('val-eyecare-toggle').classList.remove('on');
+
+        // Lock intensity slider
+        const intensity = document.getElementById('opt-val-eyecare-intensity');
+        intensity.classList.add('disabled');
+        intensity.setAttribute('data-val', '0');
+        document.getElementById('val-intensity-fill').style.width = '0%';
+        document.getElementById('val-intensity-txt').textContent = '0%';
+
+        showToast('护眼模式已关闭');
+      }
+
+      document.getElementById('btn-dialog-confirm').addEventListener('click', () => {
+        tvFocusEngine.closeDialog('#disclaimer-dialog');
+        turnOnEyecare();
+      });
+
+      document.getElementById('btn-dialog-cancel').addEventListener('click', () => {
+        tvFocusEngine.closeDialog('#disclaimer-dialog');
+        showToast('取消开启', true);
+      });
+
+      // Settings toggles toggler (Image 4-5)
+      document.getElementById('opt-val-autohdr').addEventListener('click', () => {
+        const isActive = document.getElementById('val-autohdr-toggle').classList.toggle('on');
+        showToast(isActive ? '自动HDR转换已开启' : '自动HDR转换已关闭');
+      });
+
+      document.getElementById('opt-val-blacklevel-ext').addEventListener('click', () => {
+        const valTxt = document.getElementById('val-blacklevel-ext-txt');
+        const isActive = valTxt.textContent === '关';
+        valTxt.textContent = isActive ? '开' : '关';
+        showToast(isActive ? '黑电平延伸已开启' : '黑电平延伸已关闭');
+      });
+
+      document.getElementById('opt-val-dynamic-contrast').addEventListener('click', () => {
+        const valTxt = document.getElementById('val-dynamic-contrast-txt');
+        const isActive = valTxt.textContent === '关';
+        valTxt.textContent = isActive ? '开' : '关';
+        showToast(isActive ? '动态对比度已开启' : '动态对比度已关闭');
+      });
+
+      document.getElementById('opt-val-colorenhance').addEventListener('click', () => {
+        const valTxt = document.getElementById('val-colorenhance-txt');
+        const isActive = valTxt.textContent === '关';
+        valTxt.textContent = isActive ? '开' : '关';
+        showToast(isActive ? '色彩增强已开启' : '色彩增强已关闭');
+      });
+
+      // Description logic observer
+      const observer = new MutationObserver(() => {
+        const focused = tvFocusEngine.currentFocused;
+        if (!focused) return;
+
+        const iconEl = document.getElementById('detail-icon-node');
+        const titleEl = document.getElementById('detail-title-node');
+        const descEl = document.getElementById('detail-desc-node');
+
+        if (focused.id === 'opt-pq-mode') {
+          titleEl.textContent = '图效模式';
+          descEl.textContent = '调节电视显示预置图效，包括标准、电影、杜比视界及IMAX模式。';
+        } else if (focused.id === 'opt-sub-brightness') {
+          titleEl.textContent = '亮度选项';
+          descEl.textContent = '进入微调液晶面板背光强度、对比度、黑电平和防蓝光护眼等参数。';
+        } else if (focused.id === 'opt-sub-color') {
+          titleEl.textContent = '色彩选项';
+          descEl.textContent = '调整画质颜色饱和度、色调、色温，以及管理色彩空间。';
+        } else if (focused.id === 'opt-val-eyecare') {
+          titleEl.textContent = '智能低蓝光护眼模式';
+          descEl.textContent = '开启后由算法实时过滤有害蓝光辐射。深夜或长久看剧推荐打开以减少视疲劳。';
+        } else if (focused.id === 'opt-val-eyecare-intensity') {
+          titleEl.textContent = '防蓝光强度';
+          descEl.textContent = '调节蓝光辐射过滤率（0%-100%）。开启护眼模式后激活解锁。';
+        }
+      });
+      observer.observe(document.body, { attributes: true, subtree: true });
+    });
+  </script>
+</body>
+</html>

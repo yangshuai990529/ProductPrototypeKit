@@ -1,0 +1,224 @@
+/**
+ * ProductPrototypeKit - Premium TV Theme Stylesheet (1080p Baseline)
+ * Dark Mode & D-pad Focus Optimizations
+ */
+
+:root {
+  /* Color Palette (Aligned with China React Design Tokens) */
+  --bg-dark: #12152a;         /* --background */
+  --bg-panel: #161929;        /* --tv-panel-bg / --sidebar */
+  --bg-panel-light: #1c2038;  /* --tv-subpanel-bg / --card */
+  --text-primary: #ffffff;
+  --text-secondary: #b8c0d8;  /* --secondary-foreground */
+  --text-muted: #7d8aaa;       /* --muted-foreground */
+  
+  /* Focus Accent Colors */
+  --accent-cn: #4b7bff;       /* --primary brand color */
+  --accent-overseas: #4285f4; 
+  --accent-glow: rgba(75, 123, 255, 0.4);
+  
+  /* TV-Specific Tokens */
+  --tv-focus-bg: rgba(255, 255, 255, 0.11);
+  --tv-focus-bright: rgba(255, 255, 255, 0.18);
+  --tv-active-tab-bg: rgba(255, 255, 255, 0.12);
+  --tv-slider-track: rgba(255, 255, 255, 0.15);
+  --tv-slider-fill: #4b7bff;
+  
+  /* State Colors */
+  --color-success: #3dd875;   /* --color-success */
+  --color-error: #d4183d;     /* --destructive */
+  --color-warning: #ffea00;
+  
+  /* Layout Metrics */
+  --safe-area-padding-x: 6%;  /* 115px on 1920px width */
+  --safe-area-padding-y: 6%;  /* 65px on 1080px height */
+  --border-radius-lg: 16px;
+  --border-radius-md: 8px;
+  --transition-speed: 0.25s;
+}
+
+/* Base Resets */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none; /* Prevents text selection on TV screens */
+  outline: none;     /* Suppress default browser outline */
+}
+
+body {
+  width: 1920px;
+  height: 1080px;
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  overflow: hidden; /* Lock viewport for 1080p screen */
+}
+
+/* TV Safe Area Wrap */
+.tv-viewport {
+  width: 100%;
+  height: 100%;
+  padding: var(--safe-area-padding-y) var(--safe-area-padding-x);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* Focusable Component Baseline */
+.focusable {
+  cursor: pointer;
+  position: relative;
+  transition: transform var(--transition-speed) cubic-bezier(0.25, 0.8, 0.25, 1),
+              background-color var(--transition-speed) ease,
+              border-color var(--transition-speed) ease,
+              box-shadow var(--transition-speed) ease;
+  border: 2px solid transparent;
+  border-radius: var(--border-radius-md);
+}
+
+/* Focused State Indicator (D-pad active focus) */
+.focusable.focused {
+  transform: scale(1.06); /* Premium card-zoom effect */
+  border-color: var(--accent-cn);
+  box-shadow: 0 0 20px var(--accent-glow);
+  z-index: 10; /* Ensure zoom isn't clipped by sibling cards */
+  background-color: var(--bg-panel-light);
+}
+
+/* Card Component */
+.tv-card {
+  background-color: var(--bg-panel);
+  padding: 24px;
+  border-radius: var(--border-radius-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Settings Menu Layouts (3-Column Layout) */
+.settings-container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  gap: 32px;
+}
+
+.settings-column {
+  flex: 1;
+  background-color: var(--bg-panel);
+  border-radius: var(--border-radius-lg);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+}
+
+.settings-column::-webkit-scrollbar {
+  display: none; /* Hide scrollbars for TV */
+}
+
+.menu-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 24px;
+  border-radius: var(--border-radius-md);
+  background-color: transparent;
+  color: var(--text-primary);
+  font-size: 24px;
+}
+
+.menu-item.focused {
+  background-color: var(--bg-panel-light);
+  color: #fff;
+}
+
+/* Dialog Style (Modal Overlay) */
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 1920px;
+  height: 1080px;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 999;
+}
+
+.dialog-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.dialog-box {
+  width: 640px;
+  background-color: var(--bg-panel);
+  border-radius: var(--border-radius-lg);
+  border: 2px solid var(--text-muted);
+  padding: 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  text-align: center;
+  transform: scale(0.9);
+  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.dialog-overlay.active .dialog-box {
+  transform: scale(1);
+}
+
+.dialog-title {
+  font-size: 32px;
+  font-weight: 600;
+}
+
+.dialog-message {
+  font-size: 24px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+}
+
+/* Toast Notification Styles */
+.toast-container {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background-color: #2e7d32; /* Success green by default */
+  color: white;
+  padding: 16px 40px;
+  border-radius: 40px;
+  font-size: 24px;
+  font-weight: 500;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  opacity: 0;
+  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.3s ease;
+  z-index: 1000;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.toast-container.active {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+.toast-container.error {
+  background-color: var(--color-error);
+}

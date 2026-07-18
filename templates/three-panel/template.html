@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>TCL TV Three-in-One Panel Template</title>
+  <link rel="stylesheet" href="../tv-theme.css">
+  <style>
+    /* Three-in-One Panel layout (Floating sidebar on the right) */
+    .panel-wrapper {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 540px;
+      height: 1080px;
+      background-color: rgba(27, 30, 36, 0.95);
+      backdrop-filter: blur(20px); /* Glassmorphism background blur */
+      border-left: 2px solid var(--text-muted);
+      padding: 60px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+    }
+
+    .panel-header {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      border-bottom: 1px solid var(--text-muted);
+      padding-bottom: 20px;
+    }
+
+    .panel-title {
+      font-size: 32px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .panel-tag {
+      align-self: flex-start;
+      background-color: var(--accent-cn);
+      color: #000;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    /* Column content sections */
+    .panel-section {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+    }
+
+    .panel-item-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .panel-btn {
+      padding: 18px 24px;
+      background-color: var(--bg-panel-light);
+      border-radius: var(--border-radius-md);
+      font-size: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Small badge styling */
+    .badge {
+      background-color: var(--text-muted);
+      color: var(--text-primary);
+      font-size: 14px;
+      padding: 2px 10px;
+      border-radius: 10px;
+    }
+
+    .active-badge {
+      background-color: var(--color-success);
+      color: #000;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Fullscreen TV background simulation (Behind the panel) -->
+  <div style="position: absolute; top:0; left:0; width:1920px; height:1080px; background-color: #050608; z-index: -1;">
+    <div style="padding: 100px; color: var(--text-muted); font-size: 40px;">
+      视频信号源背景层模拟区域 (Live Video Stream Feed Mockup)
+    </div>
+  </div>
+
+  <div class="tv-viewport">
+    
+    <!-- Floating Drawer Panel on Right Half -->
+    <div class="panel-wrapper">
+      
+      <!-- Panel Header -->
+      <div class="panel-header">
+        <span class="panel-tag">快捷浮板</span>
+        <h2 class="panel-title">灵悉三合一控制面板</h2>
+      </div>
+
+      <!-- Section 1: Picture Presets -->
+      <div class="panel-section">
+        <span class="section-title">画质图效快速调节</span>
+        <div class="panel-item-list">
+          <div class="panel-btn focusable" data-default-focus="true" id="btn-pq-std">
+            <span>标准模式 (Standard)</span>
+            <span class="badge active-badge" id="badge-std">激活</span>
+          </div>
+          <div class="panel-btn focusable" id="btn-pq-movie">
+            <span>影院模式 (Cinema)</span>
+            <span class="badge" id="badge-movie">应用</span>
+          </div>
+          <div class="panel-btn focusable" id="btn-pq-game">
+            <span>游戏模式 (Game Mode)</span>
+            <span class="badge" id="badge-game">应用</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2: Audio Outputs -->
+      <div class="panel-section">
+        <span class="section-title">声音输出设备</span>
+        <div class="panel-item-list">
+          <div class="panel-btn focusable" id="btn-sound-tv">
+            <span>内置电视扬声器</span>
+            <span class="badge active-badge" id="badge-sound-tv">使用中</span>
+          </div>
+          <div class="panel-btn focusable" id="btn-sound-opt">
+            <span>光纤数字音频 (SPDIF)</span>
+            <span class="badge" id="badge-sound-opt">连接</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 3: More System Tools -->
+      <div class="panel-section" style="margin-top: auto;">
+        <span class="section-title">系统工具</span>
+        <div class="panel-item-list">
+          <div class="panel-btn focusable" id="btn-cleaner">
+            <span>🚀 内存一键清理</span>
+            <span>清理</span>
+          </div>
+          <div class="panel-btn focusable" id="btn-all-settings">
+            <span>⚙ 打开系统完整设置</span>
+            <span>进入</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Standard Toast Container -->
+  <div class="toast-container" id="panel-toast">
+    <span id="panel-toast-text">设置已生效</span>
+  </div>
+
+  <!-- Load Focus Engine -->
+  <script src="../focus-manager.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const toast = document.getElementById('panel-toast');
+      const toastText = document.getElementById('panel-toast-text');
+
+      function showToast(msg) {
+        toastText.textContent = msg;
+        toast.classList.add('active');
+        setTimeout(() => {
+          toast.classList.remove('active');
+        }, 2000);
+      }
+
+      // Picture mode selection toggles
+      const pqModes = [
+        { id: 'btn-pq-std', name: '标准模式', badgeId: 'badge-std' },
+        { id: 'btn-pq-movie', name: '影院模式', badgeId: 'badge-movie' },
+        { id: 'btn-pq-game', name: '游戏模式', badgeId: 'badge-game' }
+      ];
+
+      pqModes.forEach(mode => {
+        document.getElementById(mode.id).addEventListener('click', () => {
+          pqModes.forEach(m => {
+            const b = document.getElementById(m.badgeId);
+            b.classList.remove('active-badge');
+            b.textContent = '应用';
+          });
+          const activeBadge = document.getElementById(mode.badgeId);
+          activeBadge.classList.add('active-badge');
+          activeBadge.textContent = '激活';
+          showToast(`图效已成功切换至 ${mode.name}`);
+        });
+      });
+
+      // Audio output selection toggles
+      const soundModes = [
+        { id: 'btn-sound-tv', name: '内置电视扬声器', badgeId: 'badge-sound-tv' },
+        { id: 'btn-sound-opt', name: '光纤数字音频 (SPDIF)', badgeId: 'badge-sound-opt' }
+      ];
+
+      soundModes.forEach(mode => {
+        document.getElementById(mode.id).addEventListener('click', () => {
+          soundModes.forEach(m => {
+            const b = document.getElementById(m.badgeId);
+            b.classList.remove('active-badge');
+            b.textContent = '连接';
+          });
+          const activeBadge = document.getElementById(mode.badgeId);
+          activeBadge.classList.add('active-badge');
+          activeBadge.textContent = '使用中';
+          showToast(`声音输出已切换至 ${mode.name}`);
+        });
+      });
+
+      // System cleaning animation simulation
+      document.getElementById('btn-cleaner').addEventListener('click', () => {
+        showToast('系统内存优化中...');
+        setTimeout(() => {
+          showToast('内存清理完毕！系统运行流畅');
+        }, 1500);
+      });
+
+      // settings redirect link simulation
+      document.getElementById('btn-all-settings').addEventListener('click', () => {
+        showToast('跳转并打开系统主设置菜单...');
+      });
+    });
+  </script>
+</body>
+</html>

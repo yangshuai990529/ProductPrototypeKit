@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>TCL TV System Settings Template</title>
+  <link rel="stylesheet" href="../tv-theme.css">
+  <style>
+    /* Custom sub-layouts for Settings */
+    .settings-title-bar {
+      margin-bottom: 24px;
+    }
+    
+    .settings-title {
+      font-size: 38px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    
+    .settings-subtitle {
+      font-size: 20px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    /* Slider styling inside list items */
+    .control-slider-container {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      width: 240px;
+    }
+
+    .slider-track {
+      flex: 1;
+      height: 8px;
+      background-color: var(--text-muted);
+      border-radius: 4px;
+      position: relative;
+    }
+
+    .slider-fill {
+      width: 50%; /* Default value: 50 */
+      height: 100%;
+      background-color: var(--accent-cn);
+      border-radius: 4px;
+    }
+
+    .slider-val {
+      font-size: 20px;
+      color: var(--text-primary);
+      width: 40px;
+      text-align: right;
+    }
+
+    /* Toggle switch styling */
+    .toggle-switch {
+      width: 64px;
+      height: 32px;
+      border-radius: 16px;
+      background-color: var(--text-muted);
+      position: relative;
+      transition: background-color var(--transition-speed);
+    }
+
+    .toggle-switch.on {
+      background-color: var(--color-success);
+    }
+
+    .toggle-knob {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background-color: white;
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      transition: left var(--transition-speed);
+    }
+
+    .toggle-switch.on .toggle-knob {
+      left: 36px;
+    }
+
+    /* Level 3 Column Descriptions */
+    .detail-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: var(--text-secondary);
+    }
+
+    .detail-icon {
+      font-size: 80px;
+      color: var(--text-muted);
+    }
+
+    .detail-title {
+      font-size: 28px;
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .detail-desc {
+      font-size: 20px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="tv-viewport">
+    <!-- Header Title -->
+    <div class="settings-title-bar">
+      <div class="settings-title">系统设置</div>
+      <div class="settings-subtitle">设置图像、声音、网络及其他常规项</div>
+    </div>
+
+    <!-- 3-Column Container -->
+    <div class="settings-container">
+      
+      <!-- Column 1: One-Level Category -->
+      <div class="settings-column" id="col-category">
+        <div class="menu-item focusable" data-default-focus="true" id="menu-pq">
+          <span>图像 (Picture)</span>
+          <span>&gt;</span>
+        </div>
+        <div class="menu-item focusable" id="menu-sound">
+          <span>声音 (Sound)</span>
+          <span>&gt;</span>
+        </div>
+        <div class="menu-item focusable" id="menu-network">
+          <span>网络 (Network)</span>
+          <span>&gt;</span>
+        </div>
+        <div class="menu-item focusable" id="menu-about">
+          <span>关于本机 (About)</span>
+          <span>&gt;</span>
+        </div>
+      </div>
+
+      <!-- Column 2: Two-Level Setting Controllers -->
+      <div class="settings-column" id="col-controllers">
+        <!-- Slider Item -->
+        <div class="menu-item focusable" id="item-brightness" data-type="slider" data-val="50">
+          <span>面板亮度</span>
+          <div class="control-slider-container">
+            <div class="slider-track">
+              <div class="slider-fill" id="brightness-fill" style="width: 50%;"></div>
+            </div>
+            <div class="slider-val" id="brightness-txt">50</div>
+          </div>
+        </div>
+        
+        <!-- Toggle Item -->
+        <div class="menu-item focusable" id="item-eyecare" data-type="toggle">
+          <span>护眼模式</span>
+          <div class="toggle-switch" id="eyecare-switch">
+            <div class="toggle-knob"></div>
+          </div>
+        </div>
+
+        <!-- Action Button Item -->
+        <div class="menu-item focusable" id="item-reset" data-type="action">
+          <span>恢复默认设置</span>
+          <span>按确认键重置</span>
+        </div>
+      </div>
+
+      <!-- Column 3: Three-Level Detail Display -->
+      <div class="settings-column detail-panel" id="col-detail">
+        <div class="detail-icon" id="detail-icon-node">☀</div>
+        <div class="detail-title" id="detail-title-node">面板亮度</div>
+        <div class="detail-desc" id="detail-desc-node">
+          调节背光源的整体物理亮度值。数值越高画面越亮，适合日光充足的环境下使用。
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Standard Dialog Modal Overlay -->
+  <div class="dialog-overlay" id="reset-confirm-dialog">
+    <div class="dialog-box">
+      <div class="dialog-title">确认恢复默认设置？</div>
+      <div class="dialog-message">该操作将会把全部图像与声音校准参数重置为出厂初始值。此项操作无法撤销。</div>
+      <div class="dialog-actions">
+        <div class="menu-item focusable" id="btn-dialog-cancel">取消</div>
+        <div class="menu-item focusable" id="btn-dialog-confirm" data-default-focus="true" style="background-color: var(--color-error);">确认恢复</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Standard Toast Container -->
+  <div class="toast-container" id="setting-toast">
+    <span id="toast-text">设置已成功应用</span>
+  </div>
+
+  <!-- Load Focus Engine -->
+  <script src="../focus-manager.js"></script>
+  
+  <script>
+    // Custom interaction logic for settings page
+    document.addEventListener('DOMContentLoaded', () => {
+      const toast = document.getElementById('setting-toast');
+      const toastText = document.getElementById('toast-text');
+
+      function showToast(msg, isError = false) {
+        toastText.textContent = msg;
+        if (isError) {
+          toast.classList.add('error');
+        } else {
+          toast.classList.remove('error');
+        }
+        toast.classList.add('active');
+        setTimeout(() => {
+          toast.classList.remove('active');
+        }, 2500);
+      }
+
+      // Handle Slider value shifts using ArrowLeft/Right when element is focused
+      window.addEventListener('keydown', (e) => {
+        if (!tvFocusManager.currentFocused) return;
+        
+        const el = tvFocusManager.currentFocused;
+        if (el.id === 'item-brightness') {
+          let val = parseInt(el.getAttribute('data-val'));
+          if (e.key === 'ArrowLeft' && val > 0) {
+            val -= 5;
+            applyBrightness(val);
+          } else if (e.key === 'ArrowRight' && val < 100) {
+            val += 5;
+            applyBrightness(val);
+          }
+        }
+      });
+
+      function applyBrightness(val) {
+        const el = document.getElementById('item-brightness');
+        el.setAttribute('data-val', val);
+        document.getElementById('brightness-fill').style.width = val + '%';
+        document.getElementById('brightness-txt').textContent = val;
+      }
+
+      // Handle Switch Toggles on Enter key click
+      const eyecareItem = document.getElementById('item-eyecare');
+      eyecareItem.addEventListener('click', () => {
+        const sw = document.getElementById('eyecare-switch');
+        const isOn = sw.classList.toggle('on');
+        showToast(isOn ? '已开启护眼模式' : '已关闭护眼模式');
+      });
+
+      // Handle Action trigger for dialog launch
+      const resetItem = document.getElementById('item-reset');
+      resetItem.addEventListener('click', () => {
+        tvFocusManager.openDialog('#reset-confirm-dialog');
+      });
+
+      // Dialog Confirm button click
+      const confirmBtn = document.getElementById('btn-dialog-confirm');
+      confirmBtn.addEventListener('click', () => {
+        applyBrightness(50);
+        document.getElementById('eyecare-switch').classList.remove('on');
+        tvFocusManager.closeDialog('#reset-confirm-dialog');
+        showToast('所有参数均已成功恢复默认');
+      });
+
+      // Dialog Cancel button click
+      const cancelBtn = document.getElementById('btn-dialog-cancel');
+      cancelBtn.addEventListener('click', () => {
+        tvFocusManager.closeDialog('#reset-confirm-dialog');
+      });
+
+      // Handle descriptions updates based on focused node
+      const categories = [
+        { id: 'menu-pq', title: '图像设置', desc: '调整对比度、亮度、色彩饱和度及高级画质引擎等参数。' },
+        { id: 'menu-sound', title: '声音设置', desc: '调整平衡度、智能声音模式、多段均衡器及音箱摆放设置。' },
+        { id: 'menu-network', title: '网络设置', desc: '管理有线、无线（Wi-Fi）网络连接及蓝牙外设配对。' },
+        { id: 'menu-about', title: '关于本机', desc: '查看系统版本号、序列号、运行内存及硬件诊断详情。' }
+      ];
+
+      // Custom focus event hooks to update description block
+      const observer = new MutationObserver(() => {
+        const focused = tvFocusManager.currentFocused;
+        if (!focused) return;
+
+        const cat = categories.find(c => c.id === focused.id);
+        if (cat) {
+          document.getElementById('detail-title-node').textContent = cat.title;
+          document.getElementById('detail-desc-node').textContent = cat.desc;
+          document.getElementById('detail-icon-node').textContent = '⚙';
+        } else if (focused.id === 'item-brightness') {
+          document.getElementById('detail-title-node').textContent = '面板亮度';
+          document.getElementById('detail-desc-node').textContent = '调节背光源的整体物理亮度值。数值越高画面越亮，适合日光充足的环境下使用。';
+          document.getElementById('detail-icon-node').textContent = '☀';
+        } else if (focused.id === 'item-eyecare') {
+          document.getElementById('detail-title-node').textContent = '护眼模式';
+          document.getElementById('detail-desc-node').textContent = '通过降低蓝光和自适应色温调整保护您的眼睛健康，建议晚间开启以减轻视疲劳。';
+          document.getElementById('detail-icon-node').textContent = '👁';
+        } else if (focused.id === 'item-reset') {
+          document.getElementById('detail-title-node').textContent = '恢复默认设置';
+          document.getElementById('detail-desc-node').textContent = '清除所有图像、音效及常规自定义配置项，重置系统默认基准出厂设定。';
+          document.getElementById('detail-icon-node').textContent = '🔄';
+        }
+      });
+
+      // Monitor focus class changes
+      window.addEventListener('keydown', () => {
+        setTimeout(() => {
+          observer.takeRecords();
+          const focused = tvFocusManager.currentFocused;
+          if (focused) {
+            // Force description refresh
+            observer.observe(document.body, { attributes: true, subtree: true });
+          }
+        }, 10);
+      });
+    });
+  </script>
+</body>
+</html>

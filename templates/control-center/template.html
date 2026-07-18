@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>TCL TV Control Center Template</title>
+  <link rel="stylesheet" href="../tv-theme.css">
+  <style>
+    /* Control Center drawer styling (overlay slide-in from bottom or right) */
+    .cc-container {
+      margin-top: auto; /* Push to bottom to simulate bottom overlay */
+      background-color: var(--bg-panel);
+      padding: 40px;
+      border-radius: var(--border-radius-lg);
+      border: 2px solid var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .cc-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--text-muted);
+      padding-bottom: 16px;
+    }
+
+    .cc-title {
+      font-size: 32px;
+      font-weight: 600;
+    }
+
+    .cc-time {
+      font-size: 24px;
+      color: var(--text-secondary);
+    }
+
+    /* Grid layout for switches */
+    .switch-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 24px;
+    }
+
+    .switch-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 24px;
+      background-color: var(--bg-panel-light);
+      border-radius: var(--border-radius-lg);
+      height: 180px;
+      text-align: center;
+    }
+
+    .switch-icon {
+      font-size: 40px;
+      color: var(--text-secondary);
+    }
+
+    .switch-card.active-switch .switch-icon {
+      color: var(--accent-cn);
+    }
+
+    .switch-label {
+      font-size: 20px;
+      font-weight: 500;
+    }
+
+    .switch-status {
+      font-size: 16px;
+      color: var(--text-muted);
+    }
+
+    .switch-card.active-switch .switch-status {
+      color: var(--color-success);
+    }
+
+    /* Sliders grid */
+    .slider-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+    }
+
+    .slider-card {
+      background-color: var(--bg-panel-light);
+      padding: 24px 32px;
+      border-radius: var(--border-radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .slider-info {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 22px;
+      min-width: 140px;
+    }
+
+    .slider-bar-wrap {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="tv-viewport">
+    
+    <!-- Simulate Control Center Panel on Bottom half -->
+    <div class="cc-container">
+      
+      <!-- Panel Header -->
+      <div class="cc-header">
+        <span class="cc-title">快捷控制中心 (Control Center)</span>
+        <span class="cc-time" id="clock-display">20:22</span>
+      </div>
+
+      <!-- Part 1: Grid Switches -->
+      <div class="switch-grid">
+        
+        <div class="switch-card focusable active-switch" data-default-focus="true" id="cc-wifi">
+          <div class="switch-icon">📶</div>
+          <div class="switch-label">无线网络</div>
+          <div class="switch-status">已连接</div>
+        </div>
+
+        <div class="switch-card focusable" id="cc-bluetooth">
+          <div class="switch-icon">🎧</div>
+          <div class="switch-label">蓝牙连接</div>
+          <div class="switch-status">已断开</div>
+        </div>
+
+        <div class="switch-card focusable" id="cc-eyecare">
+          <div class="switch-icon">👁</div>
+          <div class="switch-label">防蓝光护眼</div>
+          <div class="switch-status" id="eyecare-status">已关闭</div>
+        </div>
+
+        <div class="switch-card focusable" id="cc-source">
+          <div class="switch-icon">🔌</div>
+          <div class="switch-label">信号源选择</div>
+          <div class="switch-status">HDMI-1</div>
+        </div>
+
+        <div class="switch-card focusable" id="cc-settings">
+          <div class="switch-icon">⚙</div>
+          <div class="switch-label">全部设置</div>
+          <div class="switch-status">打开菜单</div>
+        </div>
+
+      </div>
+
+      <!-- Part 2: Sliders Row -->
+      <div class="slider-row">
+        
+        <div class="slider-card focusable" id="cc-slider-backlight" data-type="slider" data-val="80">
+          <div class="slider-info">
+            <span>🔆</span>
+            <span>背光亮度</span>
+          </div>
+          <div class="slider-bar-wrap">
+            <div class="slider-track">
+              <div class="slider-fill" id="backlight-fill" style="width: 80%; background-color: var(--accent-cn);"></div>
+            </div>
+            <div class="slider-val" id="backlight-txt">80</div>
+          </div>
+        </div>
+
+        <div class="slider-card focusable" id="cc-slider-volume" data-type="slider" data-val="30">
+          <div class="slider-info">
+            <span>🔊</span>
+            <span>扬声器音量</span>
+          </div>
+          <div class="slider-bar-wrap">
+            <div class="slider-track">
+              <div class="slider-fill" id="volume-fill" style="width: 30%; background-color: var(--accent-cn);"></div>
+            </div>
+            <div class="slider-val" id="volume-txt">30</div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Standard Toast Container -->
+  <div class="toast-container" id="cc-toast">
+    <span id="cc-toast-text">设置已成功应用</span>
+  </div>
+
+  <!-- Standard Dialog Popup (for Source select) -->
+  <div class="dialog-overlay" id="source-dialog">
+    <div class="dialog-box">
+      <div class="dialog-title">选择输入信号源</div>
+      <div class="dialog-message">请选择需要切换的外部连接信号端口：</div>
+      <div class="dialog-actions" style="flex-direction: column; gap: 8px;">
+        <div class="menu-item focusable" id="src-tv" data-default-focus="true">📺 模拟电视</div>
+        <div class="menu-item focusable" id="src-hdmi1">🔌 HDMI-1 (PlayStation 5)</div>
+        <div class="menu-item focusable" id="src-hdmi2">🔌 HDMI-2 (Apple TV)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Load Focus Engine -->
+  <script src="../focus-manager.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const toast = document.getElementById('cc-toast');
+      const toastText = document.getElementById('cc-toast-text');
+
+      function showToast(msg) {
+        toastText.textContent = msg;
+        toast.classList.add('active');
+        setTimeout(() => {
+          toast.classList.remove('active');
+        }, 2000);
+      }
+
+      // Handle Switch Toggles
+      const wifiCard = document.getElementById('cc-wifi');
+      wifiCard.addEventListener('click', () => {
+        const isActive = wifiCard.classList.toggle('active-switch');
+        wifiCard.querySelector('.switch-status').textContent = isActive ? '已连接' : '已断开';
+        showToast(isActive ? 'Wi-Fi 已开启并连接' : 'Wi-Fi 已关闭');
+      });
+
+      const btCard = document.getElementById('cc-bluetooth');
+      btCard.addEventListener('click', () => {
+        const isActive = btCard.classList.toggle('active-switch');
+        btCard.querySelector('.switch-status').textContent = isActive ? '配对模式' : '已断开';
+        showToast(isActive ? '蓝牙配对中...' : '蓝牙已关闭');
+      });
+
+      const eyecareCard = document.getElementById('cc-eyecare');
+      eyecareCard.addEventListener('click', () => {
+        const isActive = eyecareCard.classList.toggle('active-switch');
+        eyecareCard.querySelector('.switch-status').textContent = isActive ? '已开启' : '已关闭';
+        showToast(isActive ? '防蓝光护眼模式已开启' : '防蓝光护眼模式已关闭');
+      });
+
+      // Handle Source Dialogue popup
+      const sourceCard = document.getElementById('cc-source');
+      sourceCard.addEventListener('click', () => {
+        tvFocusManager.openDialog('#source-dialog');
+      });
+
+      // Source items click
+      ['src-tv', 'src-hdmi1', 'src-hdmi2'].forEach(id => {
+        const el = document.getElementById(id);
+        el.addEventListener('click', () => {
+          const name = el.textContent.split(' ')[1];
+          sourceCard.querySelector('.switch-status').textContent = name;
+          tvFocusManager.closeDialog('#source-dialog');
+          showToast(`已切换至信号源 ${name}`);
+        });
+      });
+
+      // Settings navigation click simulator
+      document.getElementById('cc-settings').addEventListener('click', () => {
+        showToast('正在打开系统设置主页面...');
+      });
+
+      // Handle Slider Values shifting via keyboard arrows
+      window.addEventListener('keydown', (e) => {
+        const focused = tvFocusManager.currentFocused;
+        if (!focused) return;
+
+        if (focused.id === 'cc-slider-backlight') {
+          let val = parseInt(focused.getAttribute('data-val'));
+          if (e.key === 'ArrowLeft' && val > 0) {
+            val -= 5;
+            adjustSlider('backlight', val);
+          } else if (e.key === 'ArrowRight' && val < 100) {
+            val += 5;
+            adjustSlider('backlight', val);
+          }
+        } else if (focused.id === 'cc-slider-volume') {
+          let val = parseInt(focused.getAttribute('data-val'));
+          if (e.key === 'ArrowLeft' && val > 0) {
+            val -= 2;
+            adjustSlider('volume', val);
+          } else if (e.key === 'ArrowRight' && val < 100) {
+            val += 2;
+            adjustSlider('volume', val);
+          }
+        }
+      });
+
+      function adjustSlider(type, val) {
+        const card = document.getElementById(`cc-slider-${type}`);
+        card.setAttribute('data-val', val);
+        document.getElementById(`${type}-fill`).style.width = val + '%';
+        document.getElementById(`${type}-txt`).textContent = val;
+      }
+
+      // Update System Clock
+      function updateClock() {
+        const now = new Date();
+        const hrs = String(now.getHours()).padStart(2, '0');
+        const mins = String(now.getMinutes()).padStart(2, '0');
+        document.getElementById('clock-display').textContent = `${hrs}:${mins}`;
+      }
+      setInterval(updateClock, 30000);
+      updateClock();
+    });
+  </script>
+</body>
+</html>

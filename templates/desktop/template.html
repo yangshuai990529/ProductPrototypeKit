@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>TCL TV Desktop Launcher Template</title>
+  <link rel="stylesheet" href="../tv-theme.css">
+  <style>
+    /* Desktop specific styles */
+    .launcher-title {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    
+    .launcher-tag {
+      background-color: var(--accent-cn);
+      color: #000;
+      font-size: 16px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+
+    /* Carousel Banner Card */
+    .hero-banner {
+      width: 100%;
+      height: 380px;
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      border-radius: var(--border-radius-lg);
+      padding: 48px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      gap: 16px;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 40px;
+    }
+
+    .hero-banner::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 60%;
+      background: linear-gradient(to top, rgba(15, 17, 21, 0.8), transparent);
+      z-index: 1;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 800px;
+    }
+
+    .hero-tag {
+      align-self: flex-start;
+      background-color: var(--color-warning);
+      color: #000;
+      padding: 6px 16px;
+      border-radius: 4px;
+      font-size: 18px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .hero-title {
+      font-size: 48px;
+      font-weight: 700;
+      line-height: 1.2;
+      text-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    }
+
+    .hero-desc {
+      font-size: 20px;
+      color: var(--text-secondary);
+      text-shadow: 0 2px 6px rgba(0,0,0,0.5);
+    }
+
+    /* Horizontal grid tiles for App launcher */
+    .app-row-title {
+      font-size: 26px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: var(--text-primary);
+    }
+
+    .app-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 24px;
+    }
+
+    .app-tile {
+      background-color: var(--bg-panel);
+      border-radius: var(--border-radius-lg);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      height: 180px;
+      text-align: center;
+    }
+
+    .app-icon {
+      font-size: 48px;
+      width: 80px;
+      height: 80px;
+      background-color: var(--bg-panel-light);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .app-title {
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    /* Focused tile adjustments */
+    .app-tile.focused {
+      background-color: var(--bg-panel-light);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="tv-viewport">
+    
+    <!-- Launcher Title -->
+    <div class="launcher-title">
+      <span>电视智慧桌面 (Smart Launcher)</span>
+      <span class="launcher-tag">CN TCL OS</span>
+    </div>
+
+    <!-- Part 1: Hero Banner Carousel (Focusable) -->
+    <div class="hero-banner focusable" data-default-focus="true" id="desktop-hero">
+      <div class="hero-content">
+        <span class="hero-tag">首发推荐</span>
+        <h1 class="hero-title">IMAX 极清画质影片《沙丘 2》独家上线</h1>
+        <p class="hero-desc">搭载 TCL 领曜芯片 M2，结合量子点点控光 Pro 算法，还原最极致的暗部细节与影院级广色域。</p>
+      </div>
+    </div>
+
+    <!-- Part 2: App Grid Row -->
+    <div>
+      <div class="app-row-title">我的应用专区</div>
+      <div class="app-grid">
+        
+        <div class="app-tile focusable" id="app-gallery">
+          <div class="app-icon">🎬</div>
+          <div class="app-title">影音媒体库</div>
+        </div>
+
+        <div class="app-tile focusable" id="app-settings">
+          <div class="app-icon">⚙</div>
+          <div class="app-title">系统设置</div>
+        </div>
+
+        <div class="app-tile focusable" id="app-miracast">
+          <div class="app-icon">📱</div>
+          <div class="app-title">多屏投屏</div>
+        </div>
+
+        <div class="app-tile focusable" id="app-appstore">
+          <div class="app-icon">🛍</div>
+          <div class="app-title">应用商店</div>
+        </div>
+
+        <div class="app-tile focusable" id="app-camera">
+          <div class="app-icon">📷</div>
+          <div class="app-title">智能AI摄像头</div>
+        </div>
+
+        <div class="app-tile focusable" id="app-browser">
+          <div class="app-icon">🌐</div>
+          <div class="app-title">网络浏览器</div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Standard Toast Container -->
+  <div class="toast-container" id="launcher-toast">
+    <span id="launcher-toast-text">正在启动应用...</span>
+  </div>
+
+  <!-- Load Focus Engine -->
+  <script src="../focus-manager.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const toast = document.getElementById('launcher-toast');
+      const toastText = document.getElementById('launcher-toast-text');
+
+      function showToast(msg) {
+        toastText.textContent = msg;
+        toast.classList.add('active');
+        setTimeout(() => {
+          toast.classList.remove('active');
+        }, 2000);
+      }
+
+      // App launches simulator on Enter key click
+      document.getElementById('desktop-hero').addEventListener('click', () => {
+        showToast('正在打开院线推荐大片《沙丘 2》播放页...');
+      });
+
+      const apps = [
+        { id: 'app-gallery', name: '影音媒体库' },
+        { id: 'app-settings', name: '系统设置' },
+        { id: 'app-miracast', name: '多屏投屏助手' },
+        { id: 'app-appstore', name: 'TCL应用商店' },
+        { id: 'app-camera', name: 'AI健身摄像头' },
+        { id: 'app-browser', name: '网络浏览器' }
+      ];
+
+      apps.forEach(app => {
+        document.getElementById(app.id).addEventListener('click', () => {
+          showToast(`正在启动 ${app.name}...`);
+        });
+      });
+    });
+  </script>
+</body>
+</html>
