@@ -1,4 +1,4 @@
-# ProductPrototypeKit (灵悉 UI 大屏原型助手)
+# ProductPrototypeKit
 
 `ProductPrototypeKit` 是一个专为电视大屏（TV）产品经理团队打造的 **AI Copilot 原型生成工作区**。
 
