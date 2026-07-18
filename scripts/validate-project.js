@@ -45,7 +45,7 @@ console.log(`${yellow}=== Starting Global Project Validation ===${reset}\n`);
 assertFile('.agents', 'dir');
 assertFile('.agents/AGENTS.md', 'file');
 
-// 2. Check Custom Skills
+// 2. Check Custom Skills in Customization Root
 const skills = [
   'requirement-intent-classifier',
   'product-context-builder',
@@ -56,6 +56,15 @@ const skills = [
 skills.forEach(skill => {
   assertFile(`.agents/skills/${skill}`, 'dir');
   assertFile(`.agents/skills/${skill}/SKILL.md`, 'file');
+});
+
+// 2.1 Check Workbuddy Slash Command Skills
+assertFile('.workbuddy', 'dir');
+assertFile('.workbuddy/skills', 'dir');
+const workbuddySkills = [...skills, 'ppk'];
+workbuddySkills.forEach(skill => {
+  assertFile(`.workbuddy/skills/${skill}`, 'dir');
+  assertFile(`.workbuddy/skills/${skill}/SKILL.md`, 'file');
 });
 
 // 3. Check JSON Menu Database
