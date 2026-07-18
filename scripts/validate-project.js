@@ -45,24 +45,18 @@ console.log(`${yellow}=== Starting Global Project Validation ===${reset}\n`);
 assertFile('.agents', 'dir');
 assertFile('.agents/AGENTS.md', 'file');
 
-// 2. Check Custom Skills in Customization Root
+// 2. Check Workbuddy Slash Command Skills
+assertFile('.workbuddy', 'dir');
+assertFile('.workbuddy/skills', 'dir');
 const skills = [
   'requirement-intent-classifier',
   'product-context-builder',
   'menu-tree-analyzer',
   'product-design-review',
-  'prototype-generator'
+  'prototype-generator',
+  'ppk'
 ];
 skills.forEach(skill => {
-  assertFile(`.agents/skills/${skill}`, 'dir');
-  assertFile(`.agents/skills/${skill}/SKILL.md`, 'file');
-});
-
-// 2.1 Check Workbuddy Slash Command Skills
-assertFile('.workbuddy', 'dir');
-assertFile('.workbuddy/skills', 'dir');
-const workbuddySkills = [...skills, 'ppk'];
-workbuddySkills.forEach(skill => {
   assertFile(`.workbuddy/skills/${skill}`, 'dir');
   assertFile(`.workbuddy/skills/${skill}/SKILL.md`, 'file');
 });

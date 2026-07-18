@@ -1,0 +1,16 @@
+# Ignore large database files to prevent IDE indexing & token bloating
+knowledge/menu-tree/**/*.json
+
+# Ignore video assets from git and index
+*.mp4
+templates/**/*.mp4
+templates/react-template/src/imports/*.mp4
+templates/react-template-overseas/src/imports/*.mp4
+
+# Ignore OS files and node modules
+.DS_Store
+node_modules/
+templates/react-template/node_modules/
+templates/react-template-overseas/node_modules/
+dist/
+build/
