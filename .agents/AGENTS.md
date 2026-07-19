@@ -39,6 +39,6 @@ When executing a prototype generation task under this shortcut command, you MUST
   - `README.md`, `PRODUCT_SPEC.md`, `TEST_CASE.md`.
 - **IMPORTANT (Full Path Menu Reconstruction & Full Interaction)**:
   - The generated settings menu, from the first level (e.g. System Settings root) to the final target menu item level, **MUST be fully reconstructed** (including all sibling items at each level). Do not just render a few items.
-  - Sibling items at each level must be rendered and focusable (though their specific control adjustments like switches, toggles, sliders, or sub-entries can be non-functional dummy elements).
+  - Sibling items at each level must be rendered and focusable, and **MUST visually render their corresponding control components (such as toggle switches, slider bars, numerical values, or sub-menu arrows/entry indicators) based on their functional types**, rather than rendering them as plain text. The controls themselves can be dummy non-functional elements.
   - The entire selected path from the first level to the target setting item **MUST have complete, unbroken end-to-end interactions** (D-pad focus movement, selection, enter, back/escape). No shortcuts or missing interaction steps are allowed.
-  - These layout and interaction rules **MUST be strictly applied and take effect for both China (CN) and Overseas prototypes**.
+  - These layout, control rendering, and interaction rules **MUST be strictly applied and take effect for both China (CN) and Overseas prototypes**.
