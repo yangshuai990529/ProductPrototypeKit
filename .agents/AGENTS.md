@@ -26,6 +26,7 @@ When executing a prototype generation task under this shortcut command, you MUST
 ### Step 3: Menu Analyzer (`menu-tree-analyzer`)
 - **MCP Preferred (Strict Accuracy)**: If the `product-prototype-kit` MCP server is configured and active, the Agent/Copilot **MUST** use the MCP tools (`search_menu`, `get_menu_path`) for menu tree database retrieval.
 - **Strict Accuracy Constraint**: The retrieved menu nodes, IDs, and paths must be 100% accurate matching the database. No fabrication of nodes or paths is allowed under any circumstances. Hallucination is strictly forbidden.
+- **Chinese to English Translation for Overseas**: If the target is an Overseas project, but the user inputs the menu names in Chinese, the Agent/Copilot **MUST** translate them to English first, and then search the Overseas menu tree. Do NOT search using Chinese keywords on the Overseas database, and do NOT search the Chinese database for Overseas projects.
 - If MCP is not configured, fall back to running `node scripts/menu-helper.js`.
 
 ### Step 4: Design Review Gating (`product-design-review`)
