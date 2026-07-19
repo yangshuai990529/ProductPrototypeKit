@@ -24,10 +24,8 @@ git clone https://github.com/yangshuai990529/ProductPrototypeKit.git
 - [**`.workbuddy/skills/`**](file:///Users/eric/Downloads/需求原型设计/ProductPrototypeKit/.workbuddy/skills/): 自动注册的 6 个 Workbuddy 独立命令（含 `/ppk` 主编排指令与分类/寻址/生成等子指令）。
 - [**`.agents/AGENTS.md`**](file:///Users/eric/Downloads/需求原型设计/ProductPrototypeKit/.agents/AGENTS.md): 项目级全局指令路由与串联编排规则。
 - [**`templates/`**](file:///Users/eric/Downloads/需求原型设计/ProductPrototypeKit/templates/): TV 专属高保真 React 组件模板。
-- [**`Product Design RAG/`**](file:///Users/eric/Downloads/需求原型设计/ProductPrototypeKit/Product%20Design%20RAG/): 产品设计 RAG 文件夹，包含杜比护眼测试视频 `DV2_demo_1080P.mp4`，便于未来在此快速增减文件及更新。
-- [**`Secure_Vault.zip`**](file:///Users/eric/Downloads/需求原型设计/ProductPrototypeKit/Secure_Vault.zip): 加密保护的文件包（密码为 `PPK123`），用于存放敏感设计文档及高保真原型私密包，防公开泄露。
-- [**`vault.sh`**](file:///Users/eric/Downloads/需求原型设计/ProductPrototypeKit/vault.sh): 快捷加密/解密管理脚本，支持 `./vault.sh lock` 加密与 `./vault.sh unlock` 解密。
-- [**`knowledge/`**](file:///Users/eric/Downloads/需求原型设计/ProductPrototypeKit/knowledge/): 国内/海外菜单树数据库（已配置 `.gitignore` 排除索引以大幅省下 Token）。
+- [**`Product Design RAG/`**](file:///Users/eric/Downloads/需求原型设计/ProductPrototypeKit/Product%20Design%20RAG/): 产品设计 RAG 文件夹，便于未来在此快速增减文件及更新设计规范。
+- [**`knowledge/`**](file:///Users/eric/Downloads/需求原型设计/ProductPrototypeKit/knowledge/): 国内/海外菜单树数据库。
 - [**`scripts/`**](file:///Users/eric/Downloads/需求原型设计/ProductPrototypeKit/scripts/): 
   - `validate-project.js`: 一键诊断项目环境。
   - `menu-helper.js`: 供 Agent 调用的本地高效模糊搜索工具。
