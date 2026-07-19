@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # ProductPrototypeKit - Password Protected Vault Helper
-# Password is set to: PPK CPGHB123
+# Password is set to: PPK123
 
 VAULT_DIR="Secure_Vault"
 ZIP_FILE="Secure_Vault.zip"
-PASSWORD="PPK CPGHB123"
+PASSWORD="PPK123"
 
 show_help() {
   echo "ProductPrototypeKit - Secure Vault Helper"
