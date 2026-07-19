@@ -390,79 +390,66 @@
       left: 0;
     }
 
-    /* Column 1: Left Categories Sidebar */
-    .sidebar {
-      width: var(--sidebar-expanded-width);
+    /* Chinese Region 1/3 Settings Panel Layout styles */
+    .settings-panel-cn {
+      width: 640px;
       height: 1080px;
-      background-color: rgba(22, 24, 33, 0.98);
+      background-color: rgba(22, 24, 33, 0.95);
+      backdrop-filter: blur(25px);
+      border-right: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      position: absolute;
+      left: 0;
+      top: 0;
+      z-index: 20;
+    }
+
+    .nav-rail-cn {
+      width: 80px;
+      height: 100%;
+      background-color: rgba(15, 17, 26, 0.4);
       padding: 80px 0;
       display: flex;
       flex-direction: column;
-      gap: 4px;
-      transition: width var(--transition-speed) cubic-bezier(0.25, 0.8, 0.25, 1);
-      overflow-x: hidden;
-      border-right: 1px solid rgba(255,255,255,0.05);
+      align-items: center;
+      gap: 24px;
+      border-right: 1px solid rgba(255, 255, 255, 0.03);
       z-index: 22;
     }
 
-    /* Collapsed state when focus moves right */
-    .sidebar.collapsed {
-      width: var(--sidebar-collapsed-width);
-    }
-
-    .sidebar-item {
+    .nav-rail-item-cn {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
       display: flex;
       align-items: center;
-      padding: 20px 30px;
-      gap: 20px;
-      font-size: 24px;
-      font-weight: 500;
-      color: var(--text-secondary);
-      border-left: 4px solid transparent;
-      white-space: nowrap;
+      justify-content: center;
+      color: rgba(255, 255, 255, 0.4);
       transition: all var(--transition-speed);
+      border: 2px solid transparent;
+      cursor: pointer;
     }
 
-    .sidebar-item.focused {
+    .nav-rail-item-cn.active {
+      color: var(--accent-tcl);
+    }
+
+    .nav-rail-item-cn.focused {
       background-color: var(--bg-panel-light);
-      color: var(--text-primary);
-      border-left-color: var(--accent-tcl);
+      color: #fff;
+      border-color: var(--text-primary);
+      transform: scale(1.08);
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.15);
     }
 
-    .sidebar-item.active {
-      background-color: var(--bg-panel-light);
-      color: var(--text-primary);
-    }
-
-    /* Icon resizing */
-    .sidebar-icon {
-      font-size: 30px;
-      min-width: 30px;
-      text-align: center;
-    }
-
-    /* Hide text during collapse */
-    .sidebar-label {
-      opacity: 1;
-      transition: opacity 0.2s ease;
-    }
-
-    .sidebar.collapsed .sidebar-label {
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    /* Column 2: Center Option Panel */
-    .center-panel {
-      width: 480px;
-      height: 1080px;
-      background-color: rgba(22, 24, 33, 0.95);
-      backdrop-filter: blur(20px);
+    .list-panel-cn {
+      width: 560px;
+      height: 100%;
+      background-color: transparent;
       padding: 80px 40px;
       display: flex;
       flex-direction: column;
       gap: 24px;
-      border-right: 1px solid rgba(255,255,255,0.05);
       z-index: 21;
     }
 
@@ -843,48 +830,51 @@
   <!-- LAYER 2: Main Settings Overlay Panel (Image 2-5) -->
   <div class="settings-overlay" id="settings-view">
     
-    <!-- Column 1: Categories Sidebar -->
-    <div class="sidebar" id="sidebar-col">
-      <div class="sidebar-item focusable active" id="sidebar-pq">
-        <span class="sidebar-icon">🖼</span>
-        <span class="sidebar-label">图像</span>
+    <!-- Chinese Region settings panel container (1/3 screen width, 640px) -->
+    <div class="settings-panel-cn">
+      
+      <!-- Column 1: Left Categories Sidebar Icons-only (80px wide) -->
+      <div class="nav-rail-cn" id="sidebar-col">
+        <div class="nav-rail-item-cn focusable active" id="sidebar-pq" title="图像">
+          <!-- Inline SVG Monitor -->
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+        </div>
+        <div class="nav-rail-item-cn focusable" id="sidebar-sound" title="声音">
+          <!-- Inline SVG Speaker -->
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+        </div>
+        <div class="nav-rail-item-cn focusable" id="sidebar-network" title="网络">
+          <!-- Inline SVG Wifi -->
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0M1.42 9a16 16 0 0 1 21.16 0M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01"></path></svg>
+        </div>
+        <div class="nav-rail-item-cn focusable" id="sidebar-bt" title="蓝牙">
+          <!-- Inline SVG Bluetooth -->
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5l11 11L12 23V1L17.5 6.5l-11 11"></path></svg>
+        </div>
+        <div class="nav-rail-item-cn focusable" id="sidebar-source" title="信号源">
+          <!-- Inline SVG Source -->
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1M6 8H5a4 4 0 0 0 0 8h1M2 12h4M18 12h4M12 5v14M10 8h4M10 16h4"></path></svg>
+        </div>
+        <div class="nav-rail-item-cn focusable" id="sidebar-ai" title="AI智能">
+          <!-- Inline SVG Brain -->
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.44 2.5 2.5 0 0 1 0-3.12 3 3 0 0 1 0-3.88 2.5 2.5 0 0 1 0-3.12A2.5 2.5 0 0 1 9.5 2zM14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.44 2.5 2.5 0 0 0 0-3.12 3 3 0 0 0 0-3.88 2.5 2.5 0 0 0 0-3.12A2.5 2.5 0 0 0 14.5 2z"></path></svg>
+        </div>
+        <div class="nav-rail-item-cn focusable" id="sidebar-general" title="通用">
+          <!-- Inline SVG Wrench -->
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
+        </div>
+        <div class="nav-rail-item-cn focusable" id="sidebar-theme" title="个性化">
+          <!-- Inline SVG Sliders -->
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
+        </div>
+        <div class="nav-rail-item-cn focusable" id="sidebar-about" title="关于">
+          <!-- Inline SVG Info -->
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="8"></line></svg>
+        </div>
       </div>
-      <div class="sidebar-item focusable" id="sidebar-sound">
-        <span class="sidebar-icon">🔊</span>
-        <span class="sidebar-label">声音</span>
-      </div>
-      <div class="sidebar-item focusable" id="sidebar-network">
-        <span class="sidebar-icon">📶</span>
-        <span class="sidebar-label">网络</span>
-      </div>
-      <div class="sidebar-item focusable" id="sidebar-bt">
-        <span class="sidebar-icon">🎧</span>
-        <span class="sidebar-label">蓝牙</span>
-      </div>
-      <div class="sidebar-item focusable" id="sidebar-source">
-        <span class="sidebar-icon">🔌</span>
-        <span class="sidebar-label">信号源</span>
-      </div>
-      <div class="sidebar-item focusable" id="sidebar-ai">
-        <span class="sidebar-icon">🧠</span>
-        <span class="sidebar-label">AI智能</span>
-      </div>
-      <div class="sidebar-item focusable" id="sidebar-general">
-        <span class="sidebar-icon">🛠</span>
-        <span class="sidebar-label">通用</span>
-      </div>
-      <div class="sidebar-item focusable" id="sidebar-theme">
-        <span class="sidebar-icon">🎨</span>
-        <span class="sidebar-label">个性化</span>
-      </div>
-      <div class="sidebar-item focusable" id="sidebar-about">
-        <span class="sidebar-icon">ℹ</span>
-        <span class="sidebar-label">关于</span>
-      </div>
-    </div>
 
-    <!-- Column 2: Center Settings Panel -->
-    <div class="center-panel" id="center-panel-col">
+      <!-- Column 2: Right Option Panel (560px wide) -->
+      <div class="list-panel-cn" id="center-panel-col">
       
       <!-- Panel Header (Dynamic Dolby/SDR tags) -->
       <div class="settings-header">
@@ -1090,11 +1080,12 @@
       </div>
 
     </div>
+    </div> <!-- Close settings-panel-cn -->
 
     <!-- Column 3: Transparent active signal feedback display (Simulation on right side) -->
     <div style="flex: 1; height: 1080px; position: relative;">
-      <div style="position: absolute; bottom: 80px; left: 80px; background-color: rgba(0,0,0,0.6); padding: 16px 32px; border-radius: 30px; font-size: 20px;">
-        💡 按 <b>Esc</b> 键可逐级退回。当前焦点列离开最左侧时，类别栏会自动收缩。
+      <div style="position: absolute; bottom: 80px; left: 80px; background-color: rgba(0,0,0,0.6); padding: 16px 32px; border-radius: 30px; font-size: 20px; color: var(--text-secondary);">
+        💡 按 <b>Esc</b> 键可返回上一级菜单或控制中心，继续按 <b>Esc</b> 键可完全退出设置。
       </div>
     </div>
   </div>

@@ -342,13 +342,15 @@ function PreviewCard({
 }
 
 // Dolby Vision logo mark
+import tvPreviewLeaf from "../imports/tv_preview_leaf.png";
+
 function DolbyVisionLogo({ small = false }: { small?: boolean }) {
   return (
-    <div className={`flex items-center gap-2 ${small ? "scale-75 origin-left" : ""}`}>
-      <div className="flex items-center">
-        <div className="w-[18px] h-[18px] rounded-full border-[2.5px] border-white/80" />
-        <div className="w-[18px] h-[18px] rounded-full border-[2.5px] border-white/80 -ml-2" />
-      </div>
+    <div className={`flex items-center gap-3 ${small ? "scale-75 origin-left" : ""}`}>
+      <svg viewBox="0 0 32 18" width="32" height="18" fill="currentColor" className="text-white flex-shrink-0">
+        <path d="M2 2h6c3.86 0 7 3.14 7 7s-3.14 7-7 7H2V2zm6 11c2.21 0 4-1.79 4-4s-1.79-4-4-4H5v8h3z" />
+        <path d="M30 2h-6c-3.86 0-7 3.14-7 7s3.14 7 7 7h6V2zm-6 11c-2.21 0-4-1.79-4-4s1.79-4 4-4h3v8h-3z" />
+      </svg>
       <div className="leading-none">
         <div className="text-white text-[13px] font-bold tracking-widest">DOLBY</div>
         <div className="text-white text-[8px] tracking-[0.22em] mt-[1px]">VISION</div>
@@ -380,7 +382,7 @@ function QuickSettingsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }
           </div>
           <div className="flex items-center gap-2.5 mt-1">
             <div className="w-9 h-9 rounded-full bg-[#2a2a2c] flex items-center justify-center">
-              <Settings className="w-5 h-5 text-white" />
+              <svg viewBox="0 0 24 24" className="w-5 h-5 fill-none stroke-white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" /></svg>
             </div>
             <div className="w-9 h-9 rounded-full bg-gradient-to-br from-emerald-400 via-teal-400 to-blue-500" />
           </div>
@@ -388,20 +390,20 @@ function QuickSettingsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }
 
         {/* Tiles grid */}
         <div className="grid grid-cols-2 gap-2.5">
-          <QuickTile icon={<Monitor className="w-5 h-5" />} label="Screensaver" />
-          <QuickTile icon={<Tv className="w-5 h-5" />} label="Inputs" />
-          <QuickTile icon={<Monitor className="w-5 h-5" />} label="Display" focused />
-          <QuickTile icon={<Volume2 className="w-5 h-5" />} label="Sound" />
-          <QuickTile icon={<Wifi className="w-5 h-5" />} label="Wi-Fi" />
-          <QuickTile icon={<Bluetooth className="w-5 h-5" />} label="Bluetooth" />
-          <QuickTile icon={<Accessibility className="w-5 h-5" />} label="Accessibility" />
+          <QuickTile icon={<svg viewBox="0 0 24 24" className="w-5 h-5 fill-none stroke-current" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2" /><path d="M3 14c4-4 8-4 12 0s4 4 6 0" /></svg>} label="Screensaver" />
+          <QuickTile icon={<svg viewBox="0 0 24 24" className="w-5 h-5 fill-none stroke-current" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2" /><line x1="8" y1="21" x2="16" y2="21" /><line x1="12" y1="17" x2="12" y2="21" /><path d="M12 7l-3 3 3 3M9 10h8" /></svg>} label="Inputs" />
+          <QuickTile icon={<svg viewBox="0 0 24 24" className="w-5 h-5 fill-none stroke-current" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2" /><line x1="8" y1="21" x2="16" y2="21" /><line x1="12" y1="17" x2="12" y2="21" /><circle cx="12" cy="10" r="2.5" /></svg>} label="Display" focused />
+          <QuickTile icon={<svg viewBox="0 0 24 24" className="w-5 h-5 fill-none stroke-current" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" /><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" /></svg>} label="Sound" />
+          <QuickTile icon={<svg viewBox="0 0 24 24" className="w-5 h-5 fill-none stroke-current" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0M1.42 9a16 16 0 0 1 21.16 0M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01" /></svg>} label="Wi-Fi" />
+          <QuickTile icon={<svg viewBox="0 0 24 24" className="w-5 h-5 fill-none stroke-current" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M6.5 6.5l11 11L12 23V1L17.5 6.5l-11 11" /></svg>} label="Bluetooth" />
+          <QuickTile icon={<svg viewBox="0 0 24 24" className="w-5 h-5 fill-none stroke-current" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="5" r="2.5" /><path d="M12 7v10M7 9.5h10M9.5 21.5l2.5-6 2.5 6" /></svg>} label="Accessibility" />
         </div>
 
         {/* Info card */}
         <div className="bg-[#2a2a2c] rounded-2xl p-4">
           <div className="flex gap-3">
             <div className="w-9 h-9 rounded-xl bg-[#3a3a3c] flex items-center justify-center flex-shrink-0">
-              <Tv className="w-4 h-4 text-white" />
+              <svg viewBox="0 0 24 24" className="w-4 h-4 fill-none stroke-white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2" /><line x1="8" y1="21" x2="16" y2="21" /><line x1="12" y1="17" x2="12" y2="21" /></svg>
             </div>
             <div>
               <div className="text-white text-[13px] font-medium leading-snug">
@@ -416,7 +418,7 @@ function QuickSettingsScreen({ onNavigate }: { onNavigate: (s: Screen) => void }
 
         {/* Network status */}
         <div className="flex items-center gap-2 px-1">
-          <Wifi className="w-4 h-4 text-[#4a4a4e]" />
+          <svg viewBox="0 0 24 24" className="w-4 h-4 fill-none stroke-[#4a4a4e]" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0M1.42 9a16 16 0 0 1 21.16 0M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01" /></svg>
           <span className="text-[#4a4a4e] text-[13px]">No Internet connection</span>
         </div>
 
@@ -464,15 +466,8 @@ function PictureScreen({ onNavigate }: { onNavigate: (s: Screen) => void }) {
           wide
           description="A viewing mode designed for bright environments, offering vibrant and vivid picture quality."
         >
-          <div className="h-[160px] bg-[#1c1c1e] flex flex-col items-center justify-center gap-2">
-            <DolbyVisionLogo small />
-            <div
-              className="w-[130px] h-[80px] rounded-lg overflow-hidden mt-1"
-              style={{
-                background:
-                  "linear-gradient(135deg, #1a4a1a 0%, #2d7a2d 40%, #4aaa4a 60%, #88cc88 100%)",
-              }}
-            />
+          <div className="h-[160px] bg-[#1c1c1e] flex items-center justify-center overflow-hidden">
+            <img src={tvPreviewLeaf} alt="Dolby Vision Leaf Preview" className="w-full h-full object-cover" />
           </div>
         </PreviewCard>
       </div>
