@@ -31,6 +31,27 @@ git clone https://github.com/yangshuai990529/ProductPrototypeKit.git
 
 ---
 
+## 🔌 MCP (Model Context Protocol) 服务配置
+
+项目内置了零依赖的 MCP 服务，能够将菜单树数据库查询工具（`search_menu`、`get_menu_path`、`diff_menu`）直接作为 AI Agent 的原生工具加载，进一步提升在 Workbuddy/Gemini 中的检索和推理体验。
+
+### 配置步骤：
+
+1. 点击 Workbuddy 界面上的 **配置 MCP** 按钮（或直接打开配置文件 `~/.workbuddy/mcp.json`）。
+2. 在 `mcpServers` 对象中，加入以下配置：
+   ```json
+   "product-prototype-kit": {
+     "command": "node",
+     "args": [
+       "/Users/eric/Downloads/需求原型设计/ProductPrototypeKit/scripts/menu-helper-mcp.js"
+     ]
+   }
+   ```
+   *(注意：如果您的项目路径有变动，请将 `args` 中的路径修改为本地实际的 `scripts/menu-helper-mcp.js` 绝对路径)*
+3. 点击 **保存**，重新载入 MCP 服务即可激活。
+
+---
+
 ## 🔍 环境自检
 
 在终端运行以下命令，确保所有技能与数据库完全就绪：
