@@ -26,7 +26,7 @@ if [ "$1" == "lock" ]; then
     echo "This is a secure vault container." > "$VAULT_DIR/.keep"
   fi
 
-  # Gather list of directories that exist and should be zipped
+  # Gather list of paths that exist and should be zipped
   ZIP_PATHS=()
   
   if [ -d "$VAULT_DIR" ]; then
@@ -45,8 +45,12 @@ if [ "$1" == "lock" ]; then
     echo "Warning: '$RAG_DIR' not found, skipping."
   fi
 
+  if [ -f "DV2_demo_1080P.mp4" ]; then
+    ZIP_PATHS+=("DV2_demo_1080P.mp4")
+  fi
+
   if [ ${#ZIP_PATHS[@]} -eq 0 ]; then
-    echo "Error: No directories to encrypt."
+    echo "Error: No paths to encrypt."
     exit 1
   fi
 
