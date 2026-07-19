@@ -24,7 +24,9 @@ When executing a prototype generation task under this shortcut command, you MUST
 - If missing, initiate the Smart Interview (asking 3 target questions max).
 
 ### Step 3: Menu Analyzer (`menu-tree-analyzer`)
-- Call `node scripts/menu-helper.js` to fuzzy-search menu trees and verify path insertions.
+- **MCP Preferred (Strict Accuracy)**: If the `product-prototype-kit` MCP server is configured and active, the Agent/Copilot **MUST** use the MCP tools (`search_menu`, `get_menu_path`) for menu tree database retrieval.
+- **Strict Accuracy Constraint**: The retrieved menu nodes, IDs, and paths must be 100% accurate matching the database. No fabrication of nodes or paths is allowed under any circumstances. Hallucination is strictly forbidden.
+- If MCP is not configured, fall back to running `node scripts/menu-helper.js`.
 
 ### Step 4: Design Review Gating (`product-design-review`)
 - Output the mandatory **10-point design proposal** (Demand understanding, Goals, Scenarios, Page structure changes, etc.).
