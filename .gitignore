@@ -1,5 +1,5 @@
 # Ignore large database files to prevent IDE indexing & token bloating
-knowledge/menu-tree/**/*.json
+knowledge/menu-tree/
 
 # Ignore video assets from git and index
 *.mp4
@@ -15,5 +15,6 @@ templates/react-template-overseas/node_modules/
 dist/
 build/
 
-# Ignore the plain-text secure vault directory (only track the encrypted Secure_Vault.zip)
+# Ignore the plain-text secure vault and design assets (only track the encrypted Secure_Vault.zip)
 Secure_Vault/
+Product Design RAG/
