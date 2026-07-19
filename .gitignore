@@ -14,3 +14,6 @@ templates/react-template/node_modules/
 templates/react-template-overseas/node_modules/
 dist/
 build/
+
+# Ignore the plain-text secure vault directory (only track the encrypted Secure_Vault.zip)
+Secure_Vault/
