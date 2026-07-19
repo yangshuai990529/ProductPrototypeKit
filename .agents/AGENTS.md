@@ -20,8 +20,9 @@ When executing a prototype generation task under this shortcut command, you MUST
 - Classify the user's input requirement into Categories A to H (e.g., Settings menu modification, Control Center adjustments).
 
 ### Step 2: Context Interviewer (`product-context-builder`)
-- Verify if any platform rules (CN/Overseas), menu paths, or functional details are missing.
-- If missing, initiate the Smart Interview (asking 3 target questions max).
+- **Mandatory Environment & Platform Verification Gate**: The Agent/Copilot **MUST NOT** skip this step or make arbitrary assumptions about the target region or system.
+- **Verification Rule**: At the beginning of any prototype design task, the Agent **MUST explicitly present and ask the user to confirm/select the Target Region (China [CN] or Overseas)** and **Operating System (TCL OS, Google TV, or Fire TV)**. Even if the user's prompt contains hints, the Agent must display a clear selection or confirmation prompt to the user and wait for explicit confirmation before proceeding.
+- **Smart Interview (Max 3 questions)**: Prompt the user to clarify or confirm the Region, OS, and Entry Point. Proceed only after the user confirms.
 
 ### Step 3: Menu Analyzer (`menu-tree-analyzer`)
 - **MCP Preferred (Strict Accuracy)**: If the `product-prototype-kit` MCP server is configured and active, the Agent/Copilot **MUST** use the MCP tools (`search_menu`, `get_menu_path`) for menu tree database retrieval.
