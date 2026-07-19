@@ -28,9 +28,14 @@ When executing a prototype generation task under this shortcut command, you MUST
 
 ### Step 4: Design Review Gating (`product-design-review`)
 - Output the mandatory **10-point design proposal** (Demand understanding, Goals, Scenarios, Page structure changes, etc.).
-- **IMPORTANT**: Stop and wait for the user's explicit confirmation. Do NOT generate prototype files yet.
+- **IMPORTANT (Mandatory User Confirmation Gate)**: Stop and wait for the user's explicit manual confirmation. **Regardless of whether it is a China (CN) or Overseas project**, the Copilot/Agent **MUST NOT** directly execute the generator or generate any prototype files until the user explicitly confirms (e.g., typing "确认", "Proceed", or "Generate").
 
 ### Step 5: Generator (`prototype-generator`)
 - Upon user approval, generate the deliverables into the `prototype/` folder:
   - `index.html` (Mode 1: Vanilla CSS/JS using the new TV Tokens) OR `react-app/` (Mode 2: React + Tailwind + Shadcn components library from templates).
   - `README.md`, `PRODUCT_SPEC.md`, `TEST_CASE.md`.
+- **IMPORTANT (Full Path Menu Reconstruction & Full Interaction)**:
+  - The generated settings menu, from the first level (e.g. System Settings root) to the final target menu item level, **MUST be fully reconstructed** (including all sibling items at each level). Do not just render a few items.
+  - Sibling items at each level must be rendered and focusable (though their specific control adjustments like switches, toggles, sliders, or sub-entries can be non-functional dummy elements).
+  - The entire selected path from the first level to the target setting item **MUST have complete, unbroken end-to-end interactions** (D-pad focus movement, selection, enter, back/escape). No shortcuts or missing interaction steps are allowed.
+  - These layout and interaction rules **MUST be strictly applied and take effect for both China (CN) and Overseas prototypes**.

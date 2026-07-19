@@ -23,7 +23,8 @@ git clone https://github.com/yangshuai990529/ProductPrototypeKit.git
 
 - [**`.workbuddy/skills/`**](file:///Users/eric/Downloads/需求原型设计/ProductPrototypeKit/.workbuddy/skills/): 自动注册的 6 个 Workbuddy 独立命令（含 `/ppk` 主编排指令与分类/寻址/生成等子指令）。
 - [**`.agents/AGENTS.md`**](file:///Users/eric/Downloads/需求原型设计/ProductPrototypeKit/.agents/AGENTS.md): 项目级全局指令路由与串联编排规则。
-- [**`templates/`**](file:///Users/eric/Downloads/需求原型设计/ProductPrototypeKit/templates/): TV 专属高保真 React 组件模板，包含新加入的杜比护眼测试视频 `DV2_demo_1080P.mp4`。
+- [**`templates/`**](file:///Users/eric/Downloads/需求原型设计/ProductPrototypeKit/templates/): TV 专属高保真 React 组件模板。
+- [**`Product Design RAG/`**](file:///Users/eric/Downloads/需求原型设计/ProductPrototypeKit/Product%20Design%20RAG/): 产品设计 RAG 文件夹，包含杜比护眼测试视频 `DV2_demo_1080P.mp4`，便于未来在此快速增减文件及更新。
 - [**`knowledge/`**](file:///Users/eric/Downloads/需求原型设计/ProductPrototypeKit/knowledge/): 国内/海外菜单树数据库（已配置 `.gitignore` 排除索引以大幅省下 Token）。
 - [**`scripts/`**](file:///Users/eric/Downloads/需求原型设计/ProductPrototypeKit/scripts/): 
   - `validate-project.js`: 一键诊断项目环境。
