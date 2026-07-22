@@ -1,4 +1,4 @@
-# ProductPrototypeKit 📺
+# ProductPrototypeKit 📺 (v2.0.0)
 
 `ProductPrototypeKit` 是一个专为电视大屏（TV）产品经理打造的 **Workbuddy AI 原型生成工作区**。支持零配置一键生成符合国内（TCL OS）与海外（Google TV/Fire TV）交互规范的高保真原型。
 
@@ -23,18 +23,22 @@ git clone https://github.com/yangshuai990529/ProductPrototypeKit.git
 
 - [**`.workbuddy/skills/`**](file:///Users/eric/Downloads/需求原型设计/ProductPrototypeKit/.workbuddy/skills/): 自动注册的 6 个 Workbuddy 独立命令（含 `/ppk` 主编排指令与分类/寻址/生成等子指令）。
 - [**`.agents/AGENTS.md`**](file:///Users/eric/Downloads/需求原型设计/ProductPrototypeKit/.agents/AGENTS.md): 项目级全局指令路由与串联编排规则。
+- [**`src/domain/menu/`**](file:///Users/eric/Downloads/需求原型设计/ProductPrototypeKit/src/domain/menu/): v2.0.0 核心菜单树只读仓储、适用性覆盖层与领域服务。
+- [**`knowledge/`**](file:///Users/eric/Downloads/需求原型设计/ProductPrototypeKit/knowledge/): 国内/海外菜单树数据库及海外平台适用性覆盖层 (`applicability/`)。
 - [**`templates/`**](file:///Users/eric/Downloads/需求原型设计/ProductPrototypeKit/templates/): TV 专属高保真 React 组件模板。
-- [**`Product Design RAG/`**](file:///Users/eric/Downloads/需求原型设计/ProductPrototypeKit/Product%20Design%20RAG/): 产品设计 RAG 文件夹，便于未来在此快速增减文件及更新设计规范。
-- [**`knowledge/`**](file:///Users/eric/Downloads/需求原型设计/ProductPrototypeKit/knowledge/): 国内/海外菜单树数据库。
+- [**`Product Design RAG/`**](file:///Users/eric/Downloads/需求原型设计/ProductPrototypeKit/Product%20Design%20RAG/): 产品设计 RAG 文件夹。
 - [**`scripts/`**](file:///Users/eric/Downloads/需求原型设计/ProductPrototypeKit/scripts/): 
-  - `validate-project.js`: 一键诊断项目环境。
-  - `menu-helper.js`: 供 Agent 调用的本地高效模糊搜索工具。
+  - `validate-project.js`: 一键项目环境自检与全量测试套件。
+  - `menu-helper.js`: 供 Agent / 命令行调用的本地模糊搜索工具。
+  - `menu-helper-mcp.js`: 可信 MCP stdio 服务（支持 `structuredContent` 与 `outputSchema`）。
+- [**`tests/`**](file:///Users/eric/Downloads/需求原型设计/ProductPrototypeKit/tests/): 单元测试、Ajv 数据质量拦截、MCP 合同测试与 CLI/MCP Parity 测试。
+- [**`evals/`**](file:///Users/eric/Downloads/需求原型设计/ProductPrototypeKit/evals/): 20 条中/海外黄金基准评估集。
 
 ---
 
 ## 🔌 MCP (Model Context Protocol) 服务配置
 
-项目内置了零依赖的 MCP 服务，能够将菜单树数据库查询工具（`search_menu`、`get_menu_path`、`diff_menu`）直接作为 AI Agent 的原生工具加载，进一步提升在 Workbuddy/Gemini 中的检索和推理体验。
+项目内置了零依赖的 MCP 服务，能够将菜单树数据库查询工具（`search_menu`、`get_menu_path`、`preview_menu_change`、`validate_change` 等）直接作为 AI Agent 的原生工具加载，进一步提升在 Workbuddy/Gemini 中的检索和推理体验。
 
 ### 配置步骤：
 
@@ -48,14 +52,15 @@ git clone https://github.com/yangshuai990529/ProductPrototypeKit.git
      ]
    }
    ```
-   *(注意：如果您的项目路径有变动，请将 `args` 中的路径修改为本地实际的 `scripts/menu-helper-mcp.js` 绝对路径)*
 3. 点击 **保存**，重新载入 MCP 服务即可激活。
 
 ---
 
 ## 🔍 环境自检
 
-在终端运行以下命令，确保所有技能与数据库完全就绪：
+在终端运行以下命令，确保所有技能、测试与数据库完全就绪：
 ```bash
-node scripts/validate-project.js
+npm run validate
 ```
+
+要查看详细更新历史，请参阅 [CHANGELOG.md](file:///Users/eric/Downloads/%E9%9C%80%E6%B1%82%E5%8E%9F%E5%9E%8B%E8%AE%BE%E8%AE%A1/ProductPrototypeKit/CHANGELOG.md)。

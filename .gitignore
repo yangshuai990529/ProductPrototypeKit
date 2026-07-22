@@ -5,3 +5,6 @@ templates/react-template/node_modules/
 templates/react-template-overseas/node_modules/
 dist/
 build/
+scratch/
+.cursor/
+Secure_Vault.zip

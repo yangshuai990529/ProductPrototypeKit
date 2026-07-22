@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PlatformApplicabilityOverrideSchema",
+  "description": "Ajv 2020 Draft JSON Schema for platform applicability overrides in ProductPrototypeKit",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "version": { "type": "string" },
+    "description": { "type": "string" },
+    "overrides": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "node_id": { "type": "string", "description": "Unique menu node identifier" },
+          "applicable_os": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["google_tv", "fire_tv", "android_tv_generic"]
+            },
+            "minItems": 1,
+            "uniqueItems": true,
+            "description": "List of machine-enum operating systems where this node applies"
+          },
+          "applicability_status": {
+            "type": "string",
+            "enum": ["confirmed", "inferred", "unknown", "conflict"],
+            "description": "Verification status of the applicability record"
+          },
+          "source": { "type": "string", "description": "Data source or specification document" },
+          "source_candidates": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "List of candidate sources when conflicts occur"
+          },
+          "effective_from": { "type": "string", "description": "ISO date string" },
+          "effective_to": { "type": ["string", "null"], "description": "ISO date string or null if currently active" },
+          "owner": { "type": "string", "description": "Maintainer or team owner" },
+          "notes": { "type": "string", "description": "Additional explanatory notes" }
+        },
+        "required": ["node_id", "applicable_os", "applicability_status", "effective_from"],
+        "if": {
+          "properties": {
+            "applicability_status": { "const": "confirmed" }
+          }
+        },
+        "then": {
+          "required": ["source", "owner"]
+        }
+      }
+    }
+  },
+  "required": ["version", "overrides"]
+}

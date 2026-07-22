@@ -1,0 +1,26 @@
+{
+  "description": "Golden evaluation dataset for ProductPrototypeKit menu retrieval accuracy",
+  "version": "1.0.0",
+  "testCases": [
+    { "id": "CN_01", "region": "cn", "query": "图像", "expectedMinMatches": 1, "topNodeId": "china_图像_3618ac3b52" },
+    { "id": "CN_02", "region": "cn", "query": "音效", "expectedMinMatches": 1, "topNodeId": "china_音效模式_6389e81d7b" },
+    { "id": "CN_03", "region": "cn", "query": "网络", "expectedMinMatches": 1, "topNodeId": "china_网络_cb5da517b5" },
+    { "id": "CN_04", "region": "cn", "query": "声音", "expectedMinMatches": 1, "topNodeId": "china_声音_64fa0f9289" },
+    { "id": "CN_05", "region": "cn", "query": "蓝牙", "expectedMinMatches": 1, "topNodeId": "china_蓝牙_19e397c428" },
+    { "id": "CN_06", "region": "cn", "query": "通用", "expectedMinMatches": 1, "topNodeId": "china_通用_775eac0820" },
+    { "id": "CN_07", "region": "cn", "query": "关于", "expectedMinMatches": 1, "topNodeId": "china_关于_25e55caa0f" },
+    { "id": "CN_08", "region": "cn", "query": "高级设置", "expectedMinMatches": 1, "topNodeId": "china_高级设置_4674ea1287" },
+    { "id": "CN_09", "region": "cn", "query": "亮度", "expectedMinMatches": 1, "topNodeId": "china_亮度_224fbceee4" },
+    { "id": "CN_10", "region": "cn", "query": "图效模式", "expectedMinMatches": 1, "topNodeId": "china_图效模式_d3b33a8a0f" },
+    { "id": "OS_01", "region": "overseas", "query": "Picture", "expectedMinMatches": 1, "topNodeId": "overseas_displayed-only-if-hdmi-protocal-2-1-or-auto-with-2-1-aware-synched-device_96bd4645d8" },
+    { "id": "OS_02", "region": "overseas", "query": "Sound", "expectedMinMatches": 1, "topNodeId": "overseas_sound-system_788e8c872d" },
+    { "id": "OS_03", "region": "overseas", "query": "Network", "expectedMinMatches": 1, "topNodeId": "overseas_network-id_f33dbfbba6" },
+    { "id": "OS_04", "region": "overseas", "query": "System", "expectedMinMatches": 1, "topNodeId": "overseas_system_743205073c" },
+    { "id": "OS_05", "region": "overseas", "query": "Accessibility", "expectedMinMatches": 1, "topNodeId": "overseas_accessibility_966c727834" },
+    { "id": "OS_06", "region": "overseas", "query": "Bluetooth", "expectedMinMatches": 1, "topNodeId": "overseas_auto-internal-speaker-wired-headphone-arc-bluetooth-wired-headphone-internal-spe_7827887f22" },
+    { "id": "OS_07", "region": "overseas", "query": "Reset", "expectedMinMatches": 1, "topNodeId": "overseas_channel-preset_8d09d5961d" },
+    { "id": "OS_08", "region": "overseas", "query": "Audio", "expectedMinMatches": 1, "topNodeId": "overseas_audio-language_df4ffdbeea" },
+    { "id": "OS_09", "region": "overseas", "query": "HDMI", "expectedMinMatches": 1, "topNodeId": "overseas_hdmi-cec_b138d34d5b" },
+    { "id": "OS_10", "region": "overseas", "query": "Subtitle", "expectedMinMatches": 1, "topNodeId": "overseas_subtitle_e9fb63f6c9" }
+  ]
+}

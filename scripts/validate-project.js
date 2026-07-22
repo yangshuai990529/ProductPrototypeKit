@@ -1,6 +1,6 @@
 /**
  * ProductPrototypeKit - Global Project Validation Script
- * Verifies files, skills, databases, and templates are fully operational.
+ * Verifies files, domain layer, skills, databases, templates, applicability layer, unit tests, and golden evaluations.
  */
 
 const fs = require('fs');
@@ -65,7 +65,19 @@ skills.forEach(skill => {
 assertFile('knowledge/menu-tree/CN/menu-tree.json', 'file');
 assertFile('knowledge/menu-tree/Overseas/menu-tree.json', 'file');
 
-// 4. Check Shared UI Templates
+// 4. Check Overseas Applicability Overlay Files
+assertFile('knowledge/applicability', 'dir');
+assertFile('knowledge/applicability/schema.json', 'file');
+assertFile('knowledge/applicability/overseas-platform-overrides.json', 'file');
+
+// 5. Check Domain Layer Architecture
+assertFile('src/domain/menu', 'dir');
+assertFile('src/domain/menu/types.js', 'file');
+assertFile('src/domain/menu/MenuRepository.js', 'file');
+assertFile('src/domain/menu/ApplicabilityRepository.js', 'file');
+assertFile('src/domain/menu/MenuService.js', 'file');
+
+// 6. Check Shared UI Templates
 assertFile('templates/tv-theme.css', 'file');
 assertFile('templates/focus-manager.js', 'file');
 assertFile('templates/react-template', 'dir');
@@ -73,17 +85,50 @@ assertFile('templates/react-template/src/app/App.tsx', 'file');
 assertFile('templates/react-template-overseas', 'dir');
 assertFile('templates/react-template-overseas/src/app/App.tsx', 'file');
 
-// 5. Test CLI Fuzzy search helper script
-console.log(`\n${yellow}=== Testing Fuzzy Search CLI Script ===${reset}`);
+// 7. Check Test and Eval files
+assertFile('tests/run-tests.js', 'file');
+assertFile('tests/menu-helper.test.js', 'file');
+assertFile('tests/applicability.test.js', 'file');
+assertFile('tests/unit/menu-service.test.js', 'file');
+assertFile('tests/contract/mcp-stdio.test.js', 'file');
+assertFile('tests/parity/cli-mcp-parity.test.js', 'file');
+assertFile('tests/data-quality/schema-validation.test.js', 'file');
+assertFile('evals/golden-dataset.json', 'file');
+assertFile('evals/eval-runner.js', 'file');
+
+// 8. Test CLI Helper Script
+console.log(`\n${yellow}=== Testing CLI Helper Script ===${reset}`);
 try {
   const result = execSync('node scripts/menu-helper.js search cn "图像"', { encoding: 'utf8' });
   if (result.includes('Found') && result.includes('china_图像')) {
-    console.log(`${green}✓ CLI Fuzzy search helper test passed. Output verified.${reset}`);
+    console.log(`${green}✓ CLI Helper search test passed. Output verified.${reset}`);
   } else {
     throw new Error('Search result output did not contain expected match tags.');
   }
 } catch (e) {
-  console.log(`${red}✗ CLI Fuzzy search helper test failed: ${e.message}${reset}`);
+  console.log(`${red}✗ CLI Helper search test failed: ${e.message}${reset}`);
+  failed = true;
+}
+
+// 9. Run Master Unit & Contract Test Suite
+console.log(`\n${yellow}=== Running Master Automated Test Suite ===${reset}`);
+try {
+  const testOutput = execSync('node tests/run-tests.js', { encoding: 'utf8' });
+  console.log(testOutput);
+  console.log(`${green}✓ Master test suite passed.${reset}`);
+} catch (e) {
+  console.log(`${red}✗ Master test suite failed:\n${e.stdout || e.message}${reset}`);
+  failed = true;
+}
+
+// 10. Run Golden Dataset Evaluation
+console.log(`\n${yellow}=== Running Golden Dataset Evaluation ===${reset}`);
+try {
+  const evalOutput = execSync('node evals/eval-runner.js', { encoding: 'utf8' });
+  console.log(evalOutput);
+  console.log(`${green}✓ Golden dataset evaluation passed.${reset}`);
+} catch (e) {
+  console.log(`${red}✗ Golden dataset evaluation failed:\n${e.stdout || e.message}${reset}`);
   failed = true;
 }
 
@@ -92,5 +137,5 @@ if (failed) {
   console.log(`${red}✗ Diagnostic completed: Global validation failed. Check above errors.${reset}`);
   process.exit(1);
 } else {
-  console.log(`${green}✓ Diagnostic completed: All checks passed. ProductPrototypeKit is fully operational!${reset}`);
+  console.log(`${green}✓ Diagnostic completed: All checks passed. Phase 2 Architecture Refactoring is 100% operational!${reset}`);
 }
